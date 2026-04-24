@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">FinNote</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_transaction">Transaksi</string>
+    <string name="default_user_name">User</string>
+    <string name="welcome_user">Selamat datang, %1$s</string>
+    <string name="welcome_user_placeholder">Selamat datang, User</string>
+    <string name="summary_income">Pemasukan: %1$s</string>
+    <string name="summary_expense">Pengeluaran: %1$s</string>
+    <string name="summary_balance">Saldo: %1$s</string>
+    <string name="summary_income_placeholder">Pemasukan: Rp0</string>
+    <string name="summary_expense_placeholder">Pengeluaran: Rp0</string>
+    <string name="summary_balance_placeholder">Saldo: Rp0</string>
+    <string name="add_transaction">Tambah Transaksi</string>
 </resources>
