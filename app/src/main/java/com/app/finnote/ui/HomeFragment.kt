@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.app.finnote.MainActivity
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
+import com.app.finnote.ui.component.RecentTransactionsView
 import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class HomeFragment : Fragment() {
+    private var recentView: RecentTransactionsView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,19 +31,31 @@ class HomeFragment : Fragment() {
         val tvWelcome = view.findViewById<TextView>(R.id.tvWelcome)
         val tvIncome = view.findViewById<TextView>(R.id.tvIncome)
         val tvExpense = view.findViewById<TextView>(R.id.tvExpense)
-        val tvBalance = view.findViewById<TextView>(R.id.tvBalance)
-        val btnGoToAdd = view.findViewById<Button>(R.id.btnGoToAdd)
+        val tvBudgetUsage = view.findViewById<TextView>(R.id.tvBudgetUsage)
+        val tvBudgetRemaining = view.findViewById<TextView>(R.id.tvBudgetRemaining)
+        val progressBudget = view.findViewById<ProgressBar>(R.id.progressBudget)
+        recentView = view.findViewById(R.id.containerRecent)
 
         val userName = getString(R.string.default_user_name)
         tvWelcome.text = getString(R.string.welcome_user, userName)
 
+        val currentMonthKey = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
+
         val totalIncome = DataStore.transactions
-            .filter { it.type == "income" }
+            .filter { it.type == "income" && it.date.startsWith(currentMonthKey) }
             .sumOf { it.amount }
         val totalExpense = DataStore.transactions
-            .filter { it.type == "expense" }
+            .filter { it.type == "expense" && it.date.startsWith(currentMonthKey) }
             .sumOf { it.amount }
-        val totalBalance = totalIncome - totalExpense
+        val monthKey = DataStore.getLatestTransactionMonth()
+        val monthlyLimit = DataStore.getMonthlyLimit(monthKey)
+        val monthlyExpense = DataStore.getExpenseByMonth(monthKey)
+        val remainingBudget = (monthlyLimit - monthlyExpense).coerceAtLeast(0)
+        val budgetProgress = if (monthlyLimit <= 0) {
+            0
+        } else {
+            ((monthlyExpense.toFloat() / monthlyLimit.toFloat()) * 100f).toInt().coerceIn(0, 100)
+        }
 
         val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID")).apply {
             maximumFractionDigits = 0
@@ -48,10 +63,14 @@ class HomeFragment : Fragment() {
 
         tvIncome.text = getString(R.string.summary_income, currencyFormatter.format(totalIncome))
         tvExpense.text = getString(R.string.summary_expense, currencyFormatter.format(totalExpense))
-        tvBalance.text = getString(R.string.summary_balance, currencyFormatter.format(totalBalance))
+        tvBudgetUsage.text = "${currencyFormatter.format(monthlyExpense)} / ${currencyFormatter.format(monthlyLimit)}"
+        tvBudgetRemaining.text = "Tersisa ${currencyFormatter.format(remainingBudget)} untuk bulan ini"
+        progressBudget.progress = budgetProgress
+        recentView?.bindData(DataStore.getAll())
+    }
 
-        btnGoToAdd.setOnClickListener {
-            (activity as? MainActivity)?.showTransactionTab()
-        }
+    override fun onResume() {
+        super.onResume()
+        recentView?.bindData(DataStore.getAll())
     }
 }

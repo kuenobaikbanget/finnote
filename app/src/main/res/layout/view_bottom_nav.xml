@@ -2,12 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/customBottomNav"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
-    android:background="@color/white"
-    android:elevation="12dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_nav"
+    android:elevation="16dp"
     android:orientation="horizontal"
     android:paddingStart="8dp"
-    android:paddingEnd="8dp">
+    android:paddingTop="16dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="16dp">
 
     <!-- Home -->
     <LinearLayout
@@ -15,9 +17,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="4dp">
+        android:padding="8dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -30,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="@string/nav_home"
             android:textSize="10sp"
-            android:textColor="@color/purple_500"
+            android:textColor="@color/black"
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>
@@ -41,9 +46,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="4dp">
+        android:padding="8dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -56,7 +64,7 @@
             android:layout_height="wrap_content"
             android:text="@string/nav_transaction"
             android:textSize="10sp"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/black"
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>
@@ -67,9 +75,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="4dp">
+        android:padding="8dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -82,33 +93,7 @@
             android:layout_height="wrap_content"
             android:text="Statistik"
             android:textSize="10sp"
-            android:textColor="@color/purple_200"
-            android:layout_marginTop="2dp"/>
-
-    </LinearLayout>
-
-    <!-- Riwayat -->
-    <LinearLayout
-        android:id="@+id/btnNavHistory"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="4dp">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_history"
-            android:contentDescription="Riwayat"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Riwayat"
-            android:textSize="10sp"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/black"
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>

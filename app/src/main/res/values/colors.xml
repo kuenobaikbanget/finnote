@@ -5,6 +5,17 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="home_income_card_bg">#DCFCE7</color>
+    <color name="home_expense_card_bg">#FEE2E2</color>
+    <color name="home_income_icon_circle">#16A34A</color>
+    <color name="home_expense_icon_circle">#DC2626</color>
+    <color name="home_icon_broken_white">#F8F7F2</color>
+    <color name="green">#65c769</color>
+    <color name="red">#E4D01519</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#f6fcf9</color>
+    <color name="broken_white">#ecf9f2</color>
+    <color name="darker_green">#7dbe7e</color>
+    <color name="pale_red">#f75c5c</color>
+    <color name="pastel_green">#c4f7c3</color>
 </resources>
