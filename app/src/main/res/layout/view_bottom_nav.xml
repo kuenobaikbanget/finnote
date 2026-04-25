@@ -28,6 +28,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_home"
+            android:tint="@color/nav_item_selector"
+            android:duplicateParentState="true"
             android:contentDescription="Home"/>
 
         <TextView
@@ -35,7 +37,8 @@
             android:layout_height="wrap_content"
             android:text="@string/nav_home"
             android:textSize="10sp"
-            android:textColor="@color/black"
+            android:textColor="@color/nav_item_selector"
+            android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>
@@ -57,6 +60,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_transaction"
+            android:tint="@color/nav_item_selector"
+            android:duplicateParentState="true"
             android:contentDescription="Transaksi"/>
 
         <TextView
@@ -64,7 +69,8 @@
             android:layout_height="wrap_content"
             android:text="@string/nav_transaction"
             android:textSize="10sp"
-            android:textColor="@color/black"
+            android:textColor="@color/nav_item_selector"
+            android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>
@@ -86,6 +92,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_chart"
+            android:tint="@color/nav_item_selector"
+            android:duplicateParentState="true"
             android:contentDescription="Statistik"/>
 
         <TextView
@@ -93,7 +101,8 @@
             android:layout_height="wrap_content"
             android:text="Statistik"
             android:textSize="10sp"
-            android:textColor="@color/black"
+            android:textColor="@color/nav_item_selector"
+            android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>

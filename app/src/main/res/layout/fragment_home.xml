@@ -105,7 +105,7 @@
                                             android:contentDescription="@string/home_income_icon_desc"
                                             android:padding="5dp"
                                             android:src="@drawable/ic_arrow_down"
-                                            app:tint="@color/home_icon_broken_white" />
+                                            app:tint="@color/broken_white" />
                                     </com.google.android.material.card.MaterialCardView>
 
                                     <TextView
@@ -173,7 +173,7 @@
                                             android:padding="5dp"
                                             android:src="@drawable/ic_arrow_down"
                                             android:rotation="180"
-                                            app:tint="@color/home_icon_broken_white" />
+                                            app:tint="@color/broken_white" />
                                     </com.google.android.material.card.MaterialCardView>
 
                                     <TextView
