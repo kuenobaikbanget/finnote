@@ -36,10 +36,14 @@ class HomeFragment : Fragment() {
         val progressBudget = view.findViewById<ProgressBar>(R.id.progressBudget)
         recentView = view.findViewById(R.id.containerRecent)
 
-        val userName = getString(R.string.default_user_name)
-        tvWelcome.text = getString(R.string.welcome_user, userName)
+        val user = DataStore.currentUser
+        val firstName = user.name.split(" ")[0]
+        tvWelcome.text = getString(R.string.welcome_user, firstName)
 
-        val currentMonthKey = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
+        val calendar = java.util.Calendar.getInstance()
+        val year = calendar.get(java.util.Calendar.YEAR)
+        val month = calendar.get(java.util.Calendar.MONTH) + 1
+        val currentMonthKey = String.format(java.util.Locale.US, "%04d-%02d", year, month)
 
         val totalIncome = DataStore.transactions
             .filter { it.type == "income" && it.date.startsWith(currentMonthKey) }

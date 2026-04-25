@@ -10,9 +10,7 @@ import android.widget.TextView
 import com.app.finnote.R
 import com.app.finnote.model.Transaction
 import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class RecentTransactionsView @JvmOverloads constructor(
@@ -48,7 +46,7 @@ class RecentTransactionsView @JvmOverloads constructor(
 
         items.forEachIndexed { index, transaction ->
             val itemView = LayoutInflater.from(context)
-                .inflate(R.layout.item_recent_transaction, listContainer, false)
+                .inflate(R.layout.item_transaction, listContainer, false)
 
             val tvDate = itemView.findViewById<TextView>(R.id.tvItemDate)
             val tvTitle = itemView.findViewById<TextView>(R.id.tvItemTitle)
@@ -60,7 +58,7 @@ class RecentTransactionsView @JvmOverloads constructor(
             tvAmount.text = formatAmount(transaction)
             
             val isIncome = transaction.type == "income"
-            val colorHex = if (isIncome) "#7dbe7e" else "#f75c5c"
+            val colorHex = if (isIncome) "#7dbe7e" else "#ff6b6c"
             
             tvAmount.setTextColor(Color.parseColor(colorHex))
             ivIcon?.setColorFilter(Color.parseColor(colorHex))
@@ -78,9 +76,11 @@ class RecentTransactionsView @JvmOverloads constructor(
 
     private fun formatDate(date: String): String {
         return try {
-            val parsed = LocalDate.parse(date, DateTimeFormatter.ISO_DATE)
-            parsed.format(DateTimeFormatter.ofPattern("dd MMM", Locale.forLanguageTag("id-ID")))
-        } catch (_: DateTimeParseException) {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val outputFormat = SimpleDateFormat("dd MMM", Locale("id", "ID"))
+            val parsedDate = inputFormat.parse(date)
+            if (parsedDate != null) outputFormat.format(parsedDate) else date
+        } catch (_: Exception) {
             date
         }
     }

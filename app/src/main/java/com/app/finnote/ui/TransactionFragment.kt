@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
+import com.app.finnote.ui.chart.TransactionBarChartRenderer
 import com.app.finnote.ui.component.RecentTransactionsView
+import com.github.mikephil.charting.charts.BarChart
 
 class TransactionFragment : Fragment() {
     private var recentView: RecentTransactionsView? = null
+    private var barChart: BarChart? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,11 +25,21 @@ class TransactionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recentView = view.findViewById(R.id.containerRecent)
-        recentView?.bindData(DataStore.getAll())
+        barChart = view.findViewById(R.id.barChart)
+        
+        setupUI()
     }
 
     override fun onResume() {
         super.onResume()
-        recentView?.bindData(DataStore.getAll())
+        setupUI()
+    }
+
+    private fun setupUI() {
+        val transactions = DataStore.getAll()
+        recentView?.bindData(transactions)
+        barChart?.let {
+            TransactionBarChartRenderer.render(it, transactions)
+        }
     }
 }

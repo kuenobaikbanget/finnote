@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/customBottomNav"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,15 +30,15 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_home"
-            android:tint="@color/nav_item_selector"
+            app:tint="@color/nav_item_selector"
             android:duplicateParentState="true"
-            android:contentDescription="Home"/>
+            android:contentDescription="@string/nav_home"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/nav_home"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:textColor="@color/nav_item_selector"
             android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
@@ -60,24 +62,24 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_transaction"
-            android:tint="@color/nav_item_selector"
+            app:tint="@color/nav_item_selector"
             android:duplicateParentState="true"
-            android:contentDescription="Transaksi"/>
+            android:contentDescription="@string/nav_transaction"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/nav_transaction"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:textColor="@color/nav_item_selector"
             android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
 
     </LinearLayout>
 
-    <!-- Statistik -->
+    <!-- Profil -->
     <LinearLayout
-        android:id="@+id/btnNavStatistik"
+        android:id="@+id/btnNavProfile"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -91,16 +93,16 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_chart"
-            android:tint="@color/nav_item_selector"
+            android:src="@drawable/ic_profile"
+            app:tint="@color/nav_item_selector"
             android:duplicateParentState="true"
-            android:contentDescription="Statistik"/>
+            android:contentDescription="@string/profil"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Statistik"
-            android:textSize="10sp"
+            android:text="@string/profil"
+            android:textSize="11sp"
             android:textColor="@color/nav_item_selector"
             android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>

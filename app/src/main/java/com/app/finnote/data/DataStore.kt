@@ -1,11 +1,28 @@
 package com.app.finnote.data
 
 import com.app.finnote.model.Transaction
+import com.app.finnote.model.User
 
 object DataStore {
     private const val DEFAULT_MONTHLY_LIMIT = 5_000_000
 
+    var currentUser = User(
+        name = "Rizky",
+        email = "rizky@gmail.com",
+        joinedDate = "Januari 2024"
+    )
+
     val transactions = mutableListOf(
+        // Desember
+        Transaction("Gaji", 500000, "2025-12-01", "income"),
+        Transaction("Makan", 100000, "2025-12-05", "expense"),
+        Transaction("Bayar Cicilan", 2000000, "2025-12-10", "expense"),
+
+
+        // Januari
+        Transaction("Gaji", 500000, "2026-01-01", "income"),
+        Transaction("Makan", 100000, "2026-01-05", "expense"),
+
         // Februari
         Transaction("Gaji", 500000, "2026-02-01", "income"),
         Transaction("Makan", 150000, "2026-02-10", "expense"),
@@ -26,7 +43,7 @@ object DataStore {
     private val monthlyLimits = mutableMapOf(
         "2026-02" to 4_000_000,
         "2026-03" to 4_500_000,
-        "2026-04" to 5_000_000
+        "2026-04" to 2_000_000
     )
 
     fun getAll(): List<Transaction> = transactions.toList()
