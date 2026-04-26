@@ -11,8 +11,6 @@ import com.app.finnote.R
 import com.app.finnote.data.DataStore
 import com.app.finnote.ui.component.RecentTransactionsView
 import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class HomeFragment : Fragment() {
@@ -35,6 +33,11 @@ class HomeFragment : Fragment() {
         val tvBudgetRemaining = view.findViewById<TextView>(R.id.tvBudgetRemaining)
         val progressBudget = view.findViewById<ProgressBar>(R.id.progressBudget)
         recentView = view.findViewById(R.id.containerRecent)
+        recentView?.setFragmentManager(parentFragmentManager, this)
+
+        // Add Transaction FAB (currently disabled)
+        view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabAddTransaction).setOnClickListener {
+        }
 
         val user = DataStore.currentUser
         val firstName = user.name.split(" ")[0]
@@ -43,7 +46,7 @@ class HomeFragment : Fragment() {
         val calendar = java.util.Calendar.getInstance()
         val year = calendar.get(java.util.Calendar.YEAR)
         val month = calendar.get(java.util.Calendar.MONTH) + 1
-        val currentMonthKey = String.format(java.util.Locale.US, "%04d-%02d", year, month)
+        val currentMonthKey = String.format(Locale.US, "%04d-%02d", year, month)
 
         val totalIncome = DataStore.transactions
             .filter { it.type == "income" && it.date.startsWith(currentMonthKey) }
@@ -67,8 +70,8 @@ class HomeFragment : Fragment() {
 
         tvIncome.text = getString(R.string.summary_income, currencyFormatter.format(totalIncome))
         tvExpense.text = getString(R.string.summary_expense, currencyFormatter.format(totalExpense))
-        tvBudgetUsage.text = "${currencyFormatter.format(monthlyExpense)} / ${currencyFormatter.format(monthlyLimit)}"
-        tvBudgetRemaining.text = "Tersisa ${currencyFormatter.format(remainingBudget)} untuk bulan ini"
+        tvBudgetUsage.text = getString(R.string.budget_usage_format, currencyFormatter.format(monthlyExpense), currencyFormatter.format(monthlyLimit))
+        tvBudgetRemaining.text = getString(R.string.budget_remaining_format, currencyFormatter.format(remainingBudget))
         progressBudget.progress = budgetProgress
         recentView?.bindData(DataStore.getAll())
     }

@@ -20,11 +20,15 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         val user = DataStore.currentUser
-        
+        val transactions = DataStore.transactions
+
         view.findViewById<TextView>(R.id.tvProfileName).text = user.name
         view.findViewById<TextView>(R.id.tvProfileEmail).text = user.email
         view.findViewById<TextView>(R.id.tvProfileJoined).text = user.joinedDate
+
+        // Stats row data
+        view.findViewById<TextView>(R.id.tvTransactionCount).text = transactions.size.toString()
     }
 }

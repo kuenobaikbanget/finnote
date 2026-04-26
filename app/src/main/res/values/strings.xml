@@ -1,10 +1,26 @@
 <resources>
+    <!-- ============================================ -->
+    <!-- App-Level Strings -->
+    <!-- ============================================ -->
     <string name="app_name">FinNote</string>
+
+    <!-- ============================================ -->
+    <!-- Navigation Strings -->
+    <!-- ============================================ -->
     <string name="nav_home">Home</string>
     <string name="nav_transaction">Transaksi</string>
+
+    <!-- ============================================ -->
+    <!-- User & Welcome Strings -->
+    <!-- ============================================ -->
     <string name="default_user_name">Rizky</string>
     <string name="welcome_user">Selamat datang, %1$s!</string>
-    <string name="welcome_user_placeholder">Selamat datang, User!</string>
+    <string name="monthly_expense_title">Pengeluaran Kamu Bulan Ini 💸</string>
+    <string name="monthly_limit_title">Batas Pengeluaran Bulan Ini</string>
+
+    <!-- ============================================ -->
+    <!-- Summary / Dashboard Strings -->
+    <!-- ============================================ -->
     <string name="summary_income">%1$s</string>
     <string name="summary_expense">%1$s</string>
     <string name="summary_balance">Saldo: %1$s</string>
@@ -13,11 +29,54 @@
     <string name="summary_balance_placeholder">Saldo: Rp0</string>
     <string name="home_income_label">Pemasukan</string>
     <string name="home_expense_label">Pengeluaran</string>
+    <string name="budget_usage_format">%1$s / %2$s</string>
+    <string name="budget_remaining_format">Tersisa %1$s untuk bulan ini</string>
+
+    <!-- ============================================ -->
+    <!-- Icon Descriptions (Accessibility) -->
+    <!-- ============================================ -->
     <string name="home_income_icon_desc">Ikon pemasukan</string>
     <string name="home_expense_icon_desc">Ikon pengeluaran</string>
+    <string name="all_transaction_back_desc">Ikon kembali</string>
+    <string name="detail_transaction_type_desc">Ikon Tipe Transaction</string>
+
+
+    <!-- ============================================ -->
+    <!-- Transaction Strings -->
+    <!-- ============================================ -->
     <string name="recent_transactions_title">Transaksi Terakhir</string>
     <string name="recent_transactions_see_all">Lihat Semua</string>
     <string name="recent_transactions_empty">Belum ada transaksi.</string>
     <string name="add_transaction">Tambah Transaksi</string>
+    <string name="transaction_amount_format">%1$s %2$s</string>
+    <string name="currency_rp_format">Rp %1$s</string>
+    <string name="month_year_format">%1$s %2$s</string>
+
+    <!-- ============================================ -->
+    <!-- Profile Strings -->
+    <!-- ============================================ -->
     <string name="profil">Profil</string>
+    <string name="profile_name">%1$s</string>
+    <string name="profile_email">%1$s</string>
+    <string name="all_transactions_title">Semua Transaksi</string>
+    <string name="profile_joined">Bergabung sejak</string>
+
+    <!-- ============================================ -->
+    <!-- Transaction Details Strings -->
+    <!-- ============================================ -->
+    <string name="transaction_detail_title">Detail Transaksi</string>
+    <string name="amount">Jumlah</string>
+    <string name="title">Judul</string>
+    <string name="date">Tanggal</string>
+    <string name="type">Jenis</string>
+
+    <!-- ============================================ -->
+    <!-- Statistic Strings -->
+    <!-- ============================================ -->
+    <string name="statistic_title">Statistik Transaksi</string>
+
+
+
+
+
 </resources>
