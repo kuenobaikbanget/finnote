@@ -55,11 +55,10 @@ object DataStore {
         Transaction("Freelance", 600000, "2026-03-25", "income"),
 
         // April 2026
-        Transaction("Gaji", 5500000, "2026-04-01", "income"),
         Transaction("Makan", 180000, "2026-04-05", "expense"),
         Transaction("Transport", 55000, "2026-04-10", "expense"),
         Transaction("Listrik", 280000, "2026-04-15", "expense"),
-        Transaction("Jual Buku", 150000, "2026-04-20", "income"),
+        Transaction("Jual Sepatu", 476000, "2026-04-20", "income"),
     )
 
     private val monthlyLimits = mutableMapOf(

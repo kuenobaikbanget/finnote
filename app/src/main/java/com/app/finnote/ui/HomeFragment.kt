@@ -35,10 +35,6 @@ class HomeFragment : Fragment() {
         recentView = view.findViewById(R.id.containerRecent)
         recentView?.setFragmentManager(parentFragmentManager, this)
 
-        // Add Transaction FAB (currently disabled)
-        view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabAddTransaction).setOnClickListener {
-        }
-
         val user = DataStore.currentUser
         val firstName = user.name.split(" ")[0]
         tvWelcome.text = getString(R.string.welcome_user, firstName)

@@ -16,18 +16,39 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
+            <LinearLayout
+                android:id="@+id/layoutLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:gravity="center_vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:layout_marginStart="8dp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/inter_bold"/>
+            </LinearLayout>
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardSummary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 app:cardBackgroundColor="@color/broken_white"
                 app:cardUseCompatPadding="true"
+                android:paddingTop="30dp"
                 app:strokeWidth="0dp"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/layoutLogo">
 
                 <LinearLayout
                     android:layout_width="match_parent"
