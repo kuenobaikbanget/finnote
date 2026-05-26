@@ -9,22 +9,28 @@
     android:elevation="16dp"
     android:orientation="horizontal"
     android:paddingStart="8dp"
-    android:paddingTop="16dp"
+    android:paddingTop="10dp"
     android:paddingEnd="8dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="12dp">
 
     <!-- Home -->
     <LinearLayout
         android:id="@+id/btnNavHome"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="56dp"
         android:layout_weight="1"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/transparent"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingStart="8dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="5dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -39,9 +45,17 @@
             android:layout_height="wrap_content"
             android:text="@string/nav_home"
             android:textSize="11sp"
+            android:fontFamily="@font/inter_medium"
             android:textColor="@color/nav_item_selector"
             android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_bottom_nav_indicator"
+            android:duplicateParentState="true" />
 
     </LinearLayout>
 
@@ -49,14 +63,20 @@
     <LinearLayout
         android:id="@+id/btnNavTransaction"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="56dp"
         android:layout_weight="1"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/transparent"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingStart="8dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="5dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -71,9 +91,17 @@
             android:layout_height="wrap_content"
             android:text="@string/nav_transaction"
             android:textSize="11sp"
+            android:fontFamily="@font/inter_medium"
             android:textColor="@color/nav_item_selector"
             android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_bottom_nav_indicator"
+            android:duplicateParentState="true" />
 
     </LinearLayout>
 
@@ -81,14 +109,20 @@
     <LinearLayout
         android:id="@+id/btnNavProfile"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="56dp"
         android:layout_weight="1"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/transparent"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingStart="8dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="5dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -103,9 +137,17 @@
             android:layout_height="wrap_content"
             android:text="@string/profil"
             android:textSize="11sp"
+            android:fontFamily="@font/inter_medium"
             android:textColor="@color/nav_item_selector"
             android:duplicateParentState="true"
             android:layout_marginTop="2dp"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_bottom_nav_indicator"
+            android:duplicateParentState="true" />
 
     </LinearLayout>
 

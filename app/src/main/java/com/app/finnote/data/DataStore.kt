@@ -2,6 +2,9 @@ package com.app.finnote.data
 
 import com.app.finnote.model.Transaction
 import com.app.finnote.model.User
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 object DataStore {
     private const val DEFAULT_MONTHLY_LIMIT = 5_000_000
@@ -11,6 +14,8 @@ object DataStore {
         email = "rizky@gmail.com",
         joinedDate = "21 Januari 2024"
     )
+
+    var notificationCount = 0
 
     val transactions = mutableListOf(
         // Oktober 2025
@@ -49,16 +54,17 @@ object DataStore {
 
         // Maret 2026
         Transaction("Gaji", 5500000, "2026-03-01", "income"),
-        Transaction("Makan", 190000, "2026-03-05", "expense"),
-        Transaction("Transport", 60000, "2026-03-10", "expense"),
-        Transaction("Kesehatan", 300000, "2026-03-15", "expense"),
         Transaction("Freelance", 600000, "2026-03-25", "income"),
 
         // April 2026
-        Transaction("Makan", 180000, "2026-04-05", "expense"),
         Transaction("Transport", 55000, "2026-04-10", "expense"),
         Transaction("Listrik", 280000, "2026-04-15", "expense"),
         Transaction("Jual Sepatu", 476000, "2026-04-20", "income"),
+
+        //Mei 2026
+        Transaction("Gaji", 5500000, "2026-05-01", "income"),
+        Transaction("Makan", 150000, "2026-05-03", "expense"),
+        Transaction("Transport", 50000, "2026-05-05", "expense"),
     )
 
     private val monthlyLimits = mutableMapOf(
@@ -95,5 +101,10 @@ object DataStore {
             ?.date
             ?.take(7)
             ?: "2026-04"
+    }
+
+    fun getCurrentMonthKey(): String {
+        val calendar = Calendar.getInstance()
+        return SimpleDateFormat("yyyy-MM", Locale.US).format(calendar.time)
     }
 }

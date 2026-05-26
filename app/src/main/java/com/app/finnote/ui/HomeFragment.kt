@@ -1,20 +1,37 @@
 package com.app.finnote.ui
 
+import android.animation.ValueAnimator
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.PathInterpolator
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import com.app.finnote.MainActivity
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
 import com.app.finnote.ui.component.RecentTransactionsView
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class HomeFragment : Fragment() {
     private var recentView: RecentTransactionsView? = null
+    private var isBudgetLimitMode = false
+    private var hasPlayedHomeDataAnimation = false
+    private var hasBoundHomeData = false
+    private var budgetProgressAnimator: ValueAnimator? = null
+    private val cashflowInterpolator = AccelerateDecelerateInterpolator()
+    private val budgetProgressInterpolator = PathInterpolator(0.22f, 1f, 0.36f, 1f)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,31 +44,139 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val tvWelcome = view.findViewById<TextView>(R.id.tvWelcome)
-        val tvIncome = view.findViewById<TextView>(R.id.tvIncome)
-        val tvExpense = view.findViewById<TextView>(R.id.tvExpense)
-        val tvBudgetUsage = view.findViewById<TextView>(R.id.tvBudgetUsage)
-        val tvBudgetRemaining = view.findViewById<TextView>(R.id.tvBudgetRemaining)
-        val progressBudget = view.findViewById<ProgressBar>(R.id.progressBudget)
+        val tvNotificationBadge = view.findViewById<TextView>(R.id.tvNotificationBadge)
+        val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
+        applyHomeInsets(view)
+        setupStickyHeaderMotion(view)
         recentView = view.findViewById(R.id.containerRecent)
         recentView?.setFragmentManager(parentFragmentManager, this)
+        ivHomeProfile.setOnClickListener {
+            (requireActivity() as? MainActivity)?.openProfile()
+        }
 
         val user = DataStore.currentUser
         val firstName = user.name.split(" ")[0]
         tvWelcome.text = getString(R.string.welcome_user, firstName)
+        bindNotificationBadge(tvNotificationBadge, DataStore.notificationCount)
 
-        val calendar = java.util.Calendar.getInstance()
-        val year = calendar.get(java.util.Calendar.YEAR)
-        val month = calendar.get(java.util.Calendar.MONTH) + 1
-        val currentMonthKey = String.format(Locale.US, "%04d-%02d", year, month)
+        bindHomeData(view)
+    }
 
-        val totalIncome = DataStore.transactions
-            .filter { it.type == "income" && it.date.startsWith(currentMonthKey) }
-            .sumOf { it.amount }
-        val totalExpense = DataStore.transactions
-            .filter { it.type == "expense" && it.date.startsWith(currentMonthKey) }
-            .sumOf { it.amount }
-        val monthKey = DataStore.getLatestTransactionMonth()
+    private fun bindNotificationBadge(badge: TextView, notificationCount: Int) {
+        if (notificationCount <= 0) {
+            badge.visibility = View.GONE
+            return
+        }
+
+        badge.visibility = View.VISIBLE
+        badge.text = if (notificationCount > 9) "9+" else notificationCount.toString()
+    }
+
+    private fun applyHomeInsets(view: View) {
+        val homeContent = view.findViewById<View>(R.id.homeContent)
+        val layoutLogo = view.findViewById<View>(R.id.layoutLogo)
+        val initialPaddingLeft = homeContent.paddingLeft
+        val initialPaddingTop = homeContent.paddingTop
+        val initialPaddingRight = homeContent.paddingRight
+        val initialPaddingBottom = homeContent.paddingBottom
+        val headerInitialPaddingLeft = layoutLogo.paddingLeft
+        val headerInitialPaddingTop = layoutLogo.paddingTop
+        val headerInitialPaddingRight = layoutLogo.paddingRight
+        val headerInitialPaddingBottom = layoutLogo.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(layoutLogo) { header, insets ->
+            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            header.setPadding(
+                headerInitialPaddingLeft,
+                headerInitialPaddingTop + statusBars.top,
+                headerInitialPaddingRight,
+                headerInitialPaddingBottom
+            )
+            header.layoutParams = header.layoutParams.apply {
+                height = STICKY_HEADER_HEIGHT_DP.dpToPx() + statusBars.top
+            }
+            homeContent.setPadding(
+                initialPaddingLeft,
+                initialPaddingTop + statusBars.top,
+                initialPaddingRight,
+                initialPaddingBottom
+            )
+            insets
+        }
+        ViewCompat.requestApplyInsets(layoutLogo)
+    }
+
+    private fun setupStickyHeaderMotion(view: View) {
+        val homeScrollView = view.findViewById<NestedScrollView>(R.id.homeScrollView)
+        val layoutLogo = view.findViewById<View>(R.id.layoutLogo)
+        val ivHomeLogo = view.findViewById<ImageView>(R.id.ivHomeLogo)
+        val tvHomeLogoTitle = view.findViewById<TextView>(R.id.tvHomeLogoTitle)
+        val layoutNotification = view.findViewById<View>(R.id.layoutNotification)
+        val ivHomeNotification = view.findViewById<ImageView>(R.id.ivHomeNotification)
+        val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
+
+        homeScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            val progress = (scrollY / STICKY_HEADER_COMPACT_SCROLL_RANGE_DP.dpToPx().toFloat())
+                .coerceIn(0f, 1f)
+            bindStickyHeaderProgress(
+                progress = progress,
+                layoutLogo = layoutLogo,
+                ivHomeLogo = ivHomeLogo,
+                tvHomeLogoTitle = tvHomeLogoTitle,
+                layoutNotification = layoutNotification,
+                ivHomeNotification = ivHomeNotification,
+                ivHomeProfile = ivHomeProfile
+            )
+        }
+    }
+
+    private fun bindStickyHeaderProgress(
+        progress: Float,
+        layoutLogo: View,
+        ivHomeLogo: ImageView,
+        tvHomeLogoTitle: TextView,
+        layoutNotification: View,
+        ivHomeNotification: ImageView,
+        ivHomeProfile: ImageView
+    ) {
+        val easedProgress = 1f - ((1f - progress) * (1f - progress))
+        val logoScale = lerp(1f, 0.84f, easedProgress)
+        val titleScale = lerp(1f, 0.9f, easedProgress)
+        val actionScale = lerp(1f, 0.88f, easedProgress)
+
+        layoutLogo.elevation = lerp(8f, 12f, easedProgress)
+        ivHomeLogo.scaleX = logoScale
+        ivHomeLogo.scaleY = logoScale
+        tvHomeLogoTitle.scaleX = titleScale
+        tvHomeLogoTitle.scaleY = titleScale
+        tvHomeLogoTitle.translationX = lerp(0f, -4.dpToPx().toFloat(), easedProgress)
+        layoutNotification.translationX = lerp(0f, 3.dpToPx().toFloat(), easedProgress)
+        ivHomeNotification.scaleX = actionScale
+        ivHomeNotification.scaleY = actionScale
+        ivHomeProfile.scaleX = actionScale
+        ivHomeProfile.scaleY = actionScale
+    }
+
+    private fun lerp(start: Float, end: Float, progress: Float): Float {
+        return start + ((end - start) * progress)
+    }
+
+    private fun bindHomeData(view: View) {
+        val tvIncome = view.findViewById<TextView>(R.id.tvIncome)
+        val tvExpense = view.findViewById<TextView>(R.id.tvExpense)
+        val tvMonthlyActivityTitle = view.findViewById<TextView>(R.id.tvMonthlyActivityTitle)
+        val tvBudgetUsage = view.findViewById<TextView>(R.id.tvBudgetUsage)
+        val tvBudgetRemaining = view.findViewById<TextView>(R.id.tvBudgetRemaining)
+        val tvBudgetRemainingAmount = view.findViewById<TextView>(R.id.tvBudgetRemainingAmount)
+        val tvBudgetEdit = view.findViewById<TextView>(R.id.tvBudgetEdit)
+        val barIncomeComparison = view.findViewById<View>(R.id.barIncomeComparison)
+        val barExpenseComparison = view.findViewById<View>(R.id.barExpenseComparison)
+        val cardBudget = view.findViewById<View>(R.id.cardBudget)
+        val progressBudget = view.findViewById<ProgressBar>(R.id.progressBudget)
+        progressBudget.max = BUDGET_PROGRESS_MAX
+        val monthKey = DataStore.getCurrentMonthKey()
         val monthlyLimit = DataStore.getMonthlyLimit(monthKey)
+        val monthlyIncome = DataStore.getIncomeByMonth(monthKey)
         val monthlyExpense = DataStore.getExpenseByMonth(monthKey)
         val remainingBudget = (monthlyLimit - monthlyExpense).coerceAtLeast(0)
         val budgetProgress = if (monthlyLimit <= 0) {
@@ -59,21 +184,214 @@ class HomeFragment : Fragment() {
         } else {
             ((monthlyExpense.toFloat() / monthlyLimit.toFloat()) * 100f).toInt().coerceIn(0, 100)
         }
+        val comparisonMax = maxOf(monthlyIncome, monthlyExpense, 1)
+        val animateHomeData = shouldAnimateHomeData()
 
         val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID")).apply {
             maximumFractionDigits = 0
         }
 
-        tvIncome.text = getString(R.string.summary_income, currencyFormatter.format(totalIncome))
-        tvExpense.text = getString(R.string.summary_expense, currencyFormatter.format(totalExpense))
-        tvBudgetUsage.text = getString(R.string.budget_usage_format, currencyFormatter.format(monthlyExpense), currencyFormatter.format(monthlyLimit))
-        tvBudgetRemaining.text = getString(R.string.budget_remaining_format, currencyFormatter.format(remainingBudget))
-        progressBudget.progress = budgetProgress
+        tvIncome.text = getString(R.string.summary_income, currencyFormatter.format(monthlyIncome))
+        tvExpense.text = getString(R.string.summary_expense, currencyFormatter.format(monthlyExpense))
+        tvMonthlyActivityTitle.text = getString(R.string.monthly_expense_title, formatMonthYear(monthKey))
+        tvBudgetRemainingAmount.text = if (monthlyExpense > monthlyLimit) {
+            getString(R.string.budget_over_limit_amount_format, currencyFormatter.format(monthlyExpense - monthlyLimit))
+        } else {
+            getString(R.string.budget_remaining_amount_format, currencyFormatter.format(remainingBudget))
+        }
+        bindBudgetMode(
+            tvBudgetUsage = tvBudgetUsage,
+            tvBudgetRemaining = tvBudgetRemaining,
+            progressBudget = progressBudget,
+            monthlyExpenseText = currencyFormatter.format(monthlyExpense),
+            monthlyLimitText = currencyFormatter.format(monthlyLimit),
+            budgetProgress = budgetProgress,
+            animate = animateHomeData,
+            animateFromZero = animateHomeData
+        )
+        tvBudgetEdit.setOnClickListener {
+            // Placeholder until the monthly limit edit flow is wired.
+        }
+        cardBudget.setOnClickListener {
+            isBudgetLimitMode = !isBudgetLimitMode
+            bindBudgetMode(
+                tvBudgetUsage = tvBudgetUsage,
+                tvBudgetRemaining = tvBudgetRemaining,
+                progressBudget = progressBudget,
+                monthlyExpenseText = currencyFormatter.format(monthlyExpense),
+                monthlyLimitText = currencyFormatter.format(monthlyLimit),
+                budgetProgress = budgetProgress,
+                animate = areSystemAnimatorsEnabled(),
+                animateFromZero = false
+            )
+        }
+        bindCashflowBar(barIncomeComparison, monthlyIncome, comparisonMax, animateHomeData, 0L)
+        bindCashflowBar(
+            barExpenseComparison,
+            monthlyExpense,
+            comparisonMax,
+            animateHomeData,
+            CASHFLOW_EXPENSE_START_DELAY_MS
+        )
+        barIncomeComparison.contentDescription = "${getString(R.string.home_income_label)} ${currencyFormatter.format(monthlyIncome)}"
+        barExpenseComparison.contentDescription = "${getString(R.string.home_expense_label)} ${currencyFormatter.format(monthlyExpense)}"
+        progressBudget.contentDescription = getString(R.string.budget_usage_format, currencyFormatter.format(monthlyExpense), currencyFormatter.format(monthlyLimit))
         recentView?.bindData(DataStore.getAll())
+        hasPlayedHomeDataAnimation = true
+    }
+
+    private fun bindBudgetMode(
+        tvBudgetUsage: TextView,
+        tvBudgetRemaining: TextView,
+        progressBudget: ProgressBar,
+        monthlyExpenseText: String,
+        monthlyLimitText: String,
+        budgetProgress: Int,
+        animate: Boolean,
+        animateFromZero: Boolean
+    ) {
+        val progressDrawableRes = if (isBudgetLimitMode) {
+            R.drawable.bg_budget_progress_limit
+        } else {
+            R.drawable.bg_budget_progress_safe
+        }
+
+        tvBudgetRemaining.text = getString(R.string.budget_remaining_caption)
+        tvBudgetUsage.text = if (isBudgetLimitMode) {
+            getString(R.string.budget_limit_label, monthlyLimitText)
+        } else {
+            getString(R.string.budget_used_label, monthlyExpenseText)
+        }
+        progressBudget.progressDrawable = ContextCompat.getDrawable(requireContext(), progressDrawableRes)
+        animateBudgetProgress(
+            progressBudget = progressBudget,
+            targetProgress = if (isBudgetLimitMode) 0 else budgetProgress,
+            animate = animate,
+            animateFromZero = animateFromZero
+        )
+    }
+
+    private fun bindCashflowBar(
+        bar: View,
+        amount: Int,
+        maxAmount: Int,
+        animate: Boolean,
+        startDelay: Long
+    ) {
+        val maxHeight = 148.dpToPx()
+        val minVisibleHeight = 12.dpToPx()
+        val targetHeight = if (amount <= 0) {
+            0
+        } else {
+            ((amount.toFloat() / maxAmount.toFloat()) * maxHeight)
+                .toInt()
+                .coerceIn(minVisibleHeight, maxHeight)
+        }
+
+        bar.layoutParams = bar.layoutParams.apply {
+            height = targetHeight
+        }
+        bar.animate().cancel()
+
+        if (targetHeight == 0) {
+            bar.scaleY = 0f
+            bar.alpha = 0f
+            return
+        }
+
+        if (!animate) {
+            bar.scaleY = 1f
+            bar.alpha = 1f
+            return
+        }
+
+        bar.scaleY = 0f
+        bar.alpha = 0.72f
+        bar.post {
+            bar.pivotY = bar.height.toFloat()
+            bar.animate()
+                .scaleY(1f)
+                .alpha(1f)
+                .setStartDelay(startDelay)
+                .setDuration(CASHFLOW_ANIMATION_DURATION_MS)
+                .setInterpolator(cashflowInterpolator)
+                .start()
+        }
+    }
+
+    private fun animateBudgetProgress(
+        progressBudget: ProgressBar,
+        targetProgress: Int,
+        animate: Boolean,
+        animateFromZero: Boolean
+    ) {
+        val targetScaledProgress = targetProgress * BUDGET_PROGRESS_SCALE
+        val startProgress = if (animateFromZero) 0 else progressBudget.progress
+        budgetProgressAnimator?.cancel()
+        if (!animate || startProgress == targetScaledProgress) {
+            progressBudget.progress = targetScaledProgress
+            return
+        }
+
+        progressBudget.progress = startProgress
+        budgetProgressAnimator = ValueAnimator.ofInt(startProgress, targetScaledProgress).apply {
+            duration = BUDGET_ANIMATION_DURATION_MS
+            interpolator = budgetProgressInterpolator
+            addUpdateListener { animator ->
+                progressBudget.progress = animator.animatedValue as Int
+            }
+            start()
+        }
+    }
+
+    private fun shouldAnimateHomeData(): Boolean {
+        return !hasPlayedHomeDataAnimation && areSystemAnimatorsEnabled()
+    }
+
+    private fun areSystemAnimatorsEnabled(): Boolean {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.O || ValueAnimator.areAnimatorsEnabled()
+    }
+
+    private fun formatMonthYear(monthKey: String): String {
+        return try {
+            val parsedMonth = SimpleDateFormat("yyyy-MM", Locale.US).parse(monthKey)
+            if (parsedMonth != null) {
+                SimpleDateFormat("MMMM yyyy", Locale.forLanguageTag("id-ID")).format(parsedMonth)
+            } else {
+                monthKey
+            }
+        } catch (_: Exception) {
+            monthKey
+        }
+    }
+
+    private fun Int.dpToPx(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
 
     override fun onResume() {
         super.onResume()
-        recentView?.bindData(DataStore.getAll())
+        if (hasBoundHomeData) {
+            view?.let { bindHomeData(it) }
+        } else {
+            hasBoundHomeData = true
+        }
     }
+
+    override fun onDestroyView() {
+        budgetProgressAnimator?.cancel()
+        budgetProgressAnimator = null
+        super.onDestroyView()
+    }
+
+    companion object {
+        private const val CASHFLOW_ANIMATION_DURATION_MS = 1000L
+        private const val CASHFLOW_EXPENSE_START_DELAY_MS = 80L
+        private const val BUDGET_ANIMATION_DURATION_MS = 460L
+        private const val BUDGET_PROGRESS_SCALE = 10
+        private const val BUDGET_PROGRESS_MAX = 100 * BUDGET_PROGRESS_SCALE
+        private const val STICKY_HEADER_HEIGHT_DP = 56
+        private const val STICKY_HEADER_COMPACT_SCROLL_RANGE_DP = 96
+    }
+
 }

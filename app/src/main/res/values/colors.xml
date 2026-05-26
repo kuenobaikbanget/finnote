@@ -7,10 +7,17 @@
     <color name="broken_white">#ecf9f2</color>
     <color name="darker_green">#7dbe7e</color>
     <color name="pale_red">#ff6b6c</color>
+    <color name="chart_income_green">#2f6f44</color>
     <color name="pastel_green">#c4f7c3</color>
     <color name="grey">#8a8a8a</color>
     <color name="mint_cream">#ecf9f2</color>
     <color name="deep_teal">#517664</color>
     <color name="light_blue">#abcdca</color>
     <color name="mint">#c4f7c3</color>
+    <color name="divider_mist">#dceee4</color>
+    <color name="income_tint">#dff4e5</color>
+    <color name="expense_tint">#ffe5e5</color>
+    <color name="status_safe_tint">#dff4e5</color>
+    <color name="status_caution_tint">#eef6de</color>
+    <color name="status_exceeded_tint">#ffe5e5</color>
 </resources>
