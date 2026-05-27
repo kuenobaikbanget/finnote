@@ -30,12 +30,22 @@
     <string name="budget_used_label">Terpakai %1$s</string>
     <string name="budget_limit_label">Limit %1$s</string>
     <string name="budget_edit_action">Edit</string>
+    <string name="budget_edit_title">Edit Batas Bulanan</string>
+    <string name="budget_edit_hint">Batas pengeluaran</string>
+    <string name="budget_edit_save">Simpan</string>
+    <string name="budget_edit_cancel">Batal</string>
+    <string name="budget_edit_empty_error">Masukkan batas bulanan dulu.</string>
+    <string name="budget_edit_success">Batas bulan ini diperbarui.</string>
     <string name="budget_status_safe">Aman</string>
     <string name="budget_status_caution">Mulai hemat</string>
     <string name="budget_status_exceeded">Lewat batas</string>
     <string name="cashflow_insight_positive">Pengeluaran masih di bawah pemasukan</string>
     <string name="cashflow_insight_warning">Pengeluaran melewati pemasukan</string>
     <string name="cashflow_insight_empty">Belum ada aktivitas bulan ini</string>
+    <string name="cashflow_bar_desc">%1$s %2$s, sekitar %3$d%% dari nilai terbesar bulan ini</string>
+    <string name="home_notification_empty">Belum ada notifikasi.</string>
+    <string name="home_notification_count">%1$d notifikasi tersedia.</string>
+    <string name="add_transaction_unavailable">Fitur tambah transaksi belum tersedia.</string>
 
     <!-- Icon Descriptions -->
     <string name="home_income_icon_desc">Ikon pemasukan</string>

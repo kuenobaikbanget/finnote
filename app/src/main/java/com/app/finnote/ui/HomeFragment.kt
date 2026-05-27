@@ -3,14 +3,16 @@ package com.app.finnote.ui
 import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.PathInterpolator
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -20,6 +22,7 @@ import com.app.finnote.MainActivity
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
 import com.app.finnote.ui.component.RecentTransactionsView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -30,7 +33,7 @@ class HomeFragment : Fragment() {
     private var hasPlayedHomeDataAnimation = false
     private var hasBoundHomeData = false
     private var budgetProgressAnimator: ValueAnimator? = null
-    private val cashflowInterpolator = AccelerateDecelerateInterpolator()
+    private val cashflowInterpolator = PathInterpolator(0.22f, 1f, 0.36f, 1f)
     private val budgetProgressInterpolator = PathInterpolator(0.22f, 1f, 0.36f, 1f)
 
     override fun onCreateView(
@@ -45,6 +48,7 @@ class HomeFragment : Fragment() {
 
         val tvWelcome = view.findViewById<TextView>(R.id.tvWelcome)
         val tvNotificationBadge = view.findViewById<TextView>(R.id.tvNotificationBadge)
+        val layoutNotification = view.findViewById<View>(R.id.layoutNotification)
         val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
         applyHomeInsets(view)
         setupStickyHeaderMotion(view)
@@ -52,6 +56,18 @@ class HomeFragment : Fragment() {
         recentView?.setFragmentManager(parentFragmentManager, this)
         ivHomeProfile.setOnClickListener {
             (requireActivity() as? MainActivity)?.openProfile()
+        }
+        layoutNotification.setOnClickListener {
+            val count = DataStore.notificationCount
+            val message = if (count <= 0) {
+                getString(R.string.home_notification_empty)
+            } else {
+                getString(R.string.home_notification_count, count)
+            }
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
+        view.findViewById<View>(R.id.fabAddTransaction).setOnClickListener {
+            Toast.makeText(requireContext(), R.string.add_transaction_unavailable, Toast.LENGTH_SHORT).show()
         }
 
         val user = DataStore.currentUser
@@ -151,7 +167,6 @@ class HomeFragment : Fragment() {
         val titleScale = lerp(1f, 0.9f, easedProgress)
         val actionScale = lerp(1f, 0.88f, easedProgress)
 
-        layoutLogo.elevation = 0f
         topMenuSeparator.alpha = separatorProgress
         ivHomeLogo.scaleX = logoScale
         ivHomeLogo.scaleY = logoScale
@@ -218,7 +233,7 @@ class HomeFragment : Fragment() {
             animateFromZero = animateHomeData
         )
         tvBudgetEdit.setOnClickListener {
-            // Placeholder until the monthly limit edit flow is wired.
+            showEditBudgetLimitDialog(monthKey, monthlyLimit)
         }
         cardBudget.setOnClickListener {
             isBudgetLimitMode = !isBudgetLimitMode
@@ -241,11 +256,62 @@ class HomeFragment : Fragment() {
             animateHomeData,
             CASHFLOW_EXPENSE_START_DELAY_MS
         )
-        barIncomeComparison.contentDescription = "${getString(R.string.home_income_label)} ${currencyFormatter.format(monthlyIncome)}"
-        barExpenseComparison.contentDescription = "${getString(R.string.home_expense_label)} ${currencyFormatter.format(monthlyExpense)}"
+        barIncomeComparison.contentDescription = getCashflowBarDescription(
+            label = getString(R.string.home_income_label),
+            amountText = currencyFormatter.format(monthlyIncome),
+            amount = monthlyIncome,
+            maxAmount = comparisonMax
+        )
+        barExpenseComparison.contentDescription = getCashflowBarDescription(
+            label = getString(R.string.home_expense_label),
+            amountText = currencyFormatter.format(monthlyExpense),
+            amount = monthlyExpense,
+            maxAmount = comparisonMax
+        )
         progressBudget.contentDescription = getString(R.string.budget_usage_format, currencyFormatter.format(monthlyExpense), currencyFormatter.format(monthlyLimit))
         recentView?.bindData(DataStore.getAll())
         hasPlayedHomeDataAnimation = true
+    }
+
+    private fun showEditBudgetLimitDialog(monthKey: String, currentLimit: Int) {
+        val input = EditText(requireContext()).apply {
+            inputType = InputType.TYPE_CLASS_NUMBER
+            hint = getString(R.string.budget_edit_hint)
+            setText(currentLimit.toString())
+            selectAll()
+            setSingleLine(true)
+            setPadding(24.dpToPx(), 0, 24.dpToPx(), 0)
+        }
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.budget_edit_title)
+            .setView(input)
+            .setNegativeButton(R.string.budget_edit_cancel, null)
+            .setPositiveButton(R.string.budget_edit_save, null)
+            .show()
+
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val limit = input.text.toString().toIntOrNull()
+            if (limit == null || limit <= 0) {
+                input.error = getString(R.string.budget_edit_empty_error)
+                return@setOnClickListener
+            }
+
+            DataStore.setMonthlyLimit(monthKey, limit)
+            Toast.makeText(requireContext(), R.string.budget_edit_success, Toast.LENGTH_SHORT).show()
+            view?.let { bindHomeData(it) }
+            dialog.dismiss()
+        }
+    }
+
+    private fun getCashflowBarDescription(
+        label: String,
+        amountText: String,
+        amount: Int,
+        maxAmount: Int
+    ): String {
+        val ratio = if (maxAmount <= 0) 0 else ((amount.toFloat() / maxAmount.toFloat()) * 100f).toInt()
+        return getString(R.string.cashflow_bar_desc, label, amountText, ratio.coerceIn(0, 100))
     }
 
     private fun bindBudgetMode(
@@ -393,7 +459,7 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
-        private const val CASHFLOW_ANIMATION_DURATION_MS = 1000L
+        private const val CASHFLOW_ANIMATION_DURATION_MS = 360L
         private const val CASHFLOW_EXPENSE_START_DELAY_MS = 80L
         private const val BUDGET_ANIMATION_DURATION_MS = 460L
         private const val BUDGET_PROGRESS_SCALE = 10

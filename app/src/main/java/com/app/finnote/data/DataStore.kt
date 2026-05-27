@@ -83,6 +83,10 @@ object DataStore {
         return monthlyLimits[monthKey] ?: DEFAULT_MONTHLY_LIMIT
     }
 
+    fun setMonthlyLimit(monthKey: String, limit: Int) {
+        monthlyLimits[monthKey] = limit
+    }
+
     fun getExpenseByMonth(monthKey: String): Int {
         return transactions
             .filter { it.type == "expense" && it.date.startsWith(monthKey) }

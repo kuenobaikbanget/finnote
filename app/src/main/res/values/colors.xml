@@ -20,4 +20,6 @@
     <color name="status_safe_tint">#dff4e5</color>
     <color name="status_caution_tint">#eef6de</color>
     <color name="status_exceeded_tint">#ffe5e5</color>
+    <color name="home_gradient_start">#DDF3E2</color>
+    <color name="home_gradient_center">#F0FAF3</color>
 </resources>
