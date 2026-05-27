@@ -114,13 +114,18 @@ class HomeFragment : Fragment() {
         val layoutNotification = view.findViewById<View>(R.id.layoutNotification)
         val ivHomeNotification = view.findViewById<ImageView>(R.id.ivHomeNotification)
         val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
+        val topMenuSeparator = view.findViewById<View>(R.id.topMenuSeparator)
 
         homeScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val progress = (scrollY / STICKY_HEADER_COMPACT_SCROLL_RANGE_DP.dpToPx().toFloat())
                 .coerceIn(0f, 1f)
+            val separatorProgress = (scrollY / TOP_MENU_SEPARATOR_FADE_RANGE_DP.dpToPx().toFloat())
+                .coerceIn(0f, 1f)
             bindStickyHeaderProgress(
                 progress = progress,
+                separatorProgress = separatorProgress,
                 layoutLogo = layoutLogo,
+                topMenuSeparator = topMenuSeparator,
                 ivHomeLogo = ivHomeLogo,
                 tvHomeLogoTitle = tvHomeLogoTitle,
                 layoutNotification = layoutNotification,
@@ -132,7 +137,9 @@ class HomeFragment : Fragment() {
 
     private fun bindStickyHeaderProgress(
         progress: Float,
+        separatorProgress: Float,
         layoutLogo: View,
+        topMenuSeparator: View,
         ivHomeLogo: ImageView,
         tvHomeLogoTitle: TextView,
         layoutNotification: View,
@@ -144,7 +151,8 @@ class HomeFragment : Fragment() {
         val titleScale = lerp(1f, 0.9f, easedProgress)
         val actionScale = lerp(1f, 0.88f, easedProgress)
 
-        layoutLogo.elevation = lerp(8f, 12f, easedProgress)
+        layoutLogo.elevation = 0f
+        topMenuSeparator.alpha = separatorProgress
         ivHomeLogo.scaleX = logoScale
         ivHomeLogo.scaleY = logoScale
         tvHomeLogoTitle.scaleX = titleScale
@@ -392,6 +400,7 @@ class HomeFragment : Fragment() {
         private const val BUDGET_PROGRESS_MAX = 100 * BUDGET_PROGRESS_SCALE
         private const val STICKY_HEADER_HEIGHT_DP = 56
         private const val STICKY_HEADER_COMPACT_SCROLL_RANGE_DP = 96
+        private const val TOP_MENU_SEPARATOR_FADE_RANGE_DP = 12
     }
 
 }

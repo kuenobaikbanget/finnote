@@ -4,5 +4,7 @@ data class Transaction(
 	val title: String,
 	val amount: Int,
 	val date: String,
-	val type: String
+	val type: String,
+	val category: String = "",
+	val description: String = ""
 )

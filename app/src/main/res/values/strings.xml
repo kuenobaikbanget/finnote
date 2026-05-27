@@ -67,6 +67,9 @@
     <string name="title">Judul</string>
     <string name="date">Tanggal</string>
     <string name="type">Jenis</string>
+    <string name="category">Kategori</string>
+    <string name="description">Catatan</string>
+    <string name="category_icon_desc">Ikon kategori</string>
 
     <!-- Statistic Strings -->
     <string name="statistic_title">Statistik Transaksi</string>

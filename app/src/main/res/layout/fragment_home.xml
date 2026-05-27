@@ -328,7 +328,7 @@
         android:layout_height="56dp"
         android:layout_gravity="top"
         android:background="@drawable/bg_home_gradient"
-        android:elevation="8dp"
+        android:elevation="0dp"
         android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
@@ -408,6 +408,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/topMenuSeparator"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:alpha="0"
+            android:background="@color/divider_mist"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Add Transaction FAB (Bottom Right, above navbar) -->
