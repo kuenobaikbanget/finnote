@@ -11,10 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.app.finnote.R
-import com.app.finnote.data.DataStore
 import com.app.finnote.model.Transaction
 import com.app.finnote.ui.AllTransactionsFragment
-import com.app.finnote.ui.TransactionDetailFragment
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -56,7 +54,11 @@ class RecentTransactionsView @JvmOverloads constructor(
         currentFragment = fragment
     }
 
-    fun bindData(transactions: List<Transaction>, maxItems: Int = 6) {
+    fun bindData(
+        transactions: List<Transaction>,
+        maxItems: Int = 6,
+        onTransactionClick: ((Transaction) -> Unit)? = null
+    ) {
         listContainer.removeAllViews()
 
         val items = transactions.takeLast(maxItems).reversed()
@@ -103,18 +105,7 @@ class RecentTransactionsView @JvmOverloads constructor(
 
             // Handle click to show transaction detail
             itemView.setOnClickListener {
-                val actualIndex = DataStore.transactions.indexOf(transaction)
-                if (actualIndex >= 0) {
-                    fragmentManager?.let { fm ->
-                        currentFragment?.let { _ ->
-                            val detailFragment = TransactionDetailFragment.newInstance(actualIndex)
-                            fm.beginTransaction()
-                                .replace(R.id.fragmentContainer, detailFragment)
-                                .addToBackStack(null)
-                                .commit()
-                        }
-                    }
-                }
+                onTransactionClick?.invoke(transaction)
             }
 
             listContainer.addView(itemView)

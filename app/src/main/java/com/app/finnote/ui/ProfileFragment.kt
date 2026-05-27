@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.app.finnote.R
-import com.app.finnote.data.DataStore
 
 class ProfileFragment : Fragment() {
+    private val profileViewModel: ProfileViewModel by lazy {
+        ViewModelProvider(this, ProfileViewModel.Factory)[ProfileViewModel::class.java]
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -21,14 +25,21 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val user = DataStore.currentUser
-        val transactions = DataStore.transactions
+        profileViewModel.profile.observe(viewLifecycleOwner) { profile ->
+            val user = profile.user
 
-        view.findViewById<TextView>(R.id.tvProfileName).text = user.name
-        view.findViewById<TextView>(R.id.tvProfileEmail).text = user.email
-        view.findViewById<TextView>(R.id.tvProfileJoined).text = user.joinedDate
+            view.findViewById<TextView>(R.id.tvProfileName).text = user.name
+            view.findViewById<TextView>(R.id.tvProfileEmail).text = user.email
+            view.findViewById<TextView>(R.id.tvProfileJoined).text = user.joinedDate
 
-        // Stats row data
-        view.findViewById<TextView>(R.id.tvTransactionCount).text = transactions.size.toString()
+            // Stats row data
+            view.findViewById<TextView>(R.id.tvTransactionCount).text = profile.transactionCount.toString()
+        }
+        profileViewModel.refresh()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        profileViewModel.refresh()
     }
 }

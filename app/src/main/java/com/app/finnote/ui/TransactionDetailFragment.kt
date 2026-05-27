@@ -12,14 +12,17 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.app.finnote.R
-import com.app.finnote.data.DataStore
 import com.app.finnote.model.Transaction
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TransactionDetailFragment : Fragment() {
+    private val transactionDetailViewModel: TransactionDetailViewModel by lazy {
+        ViewModelProvider(this, TransactionDetailViewModel.Factory)[TransactionDetailViewModel::class.java]
+    }
 
     companion object {
         private const val ARG_TRANSACTION_INDEX = "transaction_index"
@@ -49,13 +52,21 @@ class TransactionDetailFragment : Fragment() {
         transactionIndex = arguments?.getInt(ARG_TRANSACTION_INDEX, -1) ?: -1
         applyTopBarInsets(view)
 
-        if (transactionIndex >= 0 && transactionIndex < DataStore.transactions.size) {
-            transaction = DataStore.transactions[transactionIndex]
-            setupUI(view)
-        } else {
+        if (transactionIndex < 0) {
             parentFragmentManager.popBackStack()
             return
         }
+
+        transactionDetailViewModel.transaction.observe(viewLifecycleOwner) { loadedTransaction ->
+            if (loadedTransaction == null) {
+                parentFragmentManager.popBackStack()
+                return@observe
+            }
+
+            transaction = loadedTransaction
+            setupUI(view)
+        }
+        transactionDetailViewModel.load(transactionIndex)
 
         view.findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             parentFragmentManager.popBackStack()

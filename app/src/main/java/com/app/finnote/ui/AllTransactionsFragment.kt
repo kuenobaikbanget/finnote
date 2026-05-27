@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.app.finnote.R
-import com.app.finnote.data.DataStore
 import com.app.finnote.model.Transaction
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -17,6 +17,10 @@ import java.util.Locale
 import androidx.core.graphics.toColorInt
 
 class AllTransactionsFragment : Fragment() {
+    private val transactionsViewModel: TransactionsViewModel by lazy {
+        ViewModelProvider(this, TransactionsViewModel.Factory)[TransactionsViewModel::class.java]
+    }
+    private var transactions: List<Transaction> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,15 +41,22 @@ class AllTransactionsFragment : Fragment() {
         view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabAddTransaction).setOnClickListener {
         }
 
-        // Load and display all transactions grouped by month
-        loadTransactions(view)
+        transactionsViewModel.transactions.observe(viewLifecycleOwner) { items ->
+            transactions = items
+            loadTransactions(view, items)
+        }
+        transactionsViewModel.refresh()
     }
 
-    private fun loadTransactions(view: View) {
+    override fun onResume() {
+        super.onResume()
+        transactionsViewModel.refresh()
+    }
+
+    private fun loadTransactions(view: View, transactions: List<Transaction>) {
         val container = view.findViewById<LinearLayout>(R.id.transactionsContainer)
         container.removeAllViews()
 
-        val transactions = DataStore.getAll()
         val groupedTransactions = groupTransactionsByMonth(transactions)
 
         if (groupedTransactions.isEmpty()) {
@@ -136,7 +147,7 @@ class AllTransactionsFragment : Fragment() {
 
         // Handle click to show transaction detail
         itemView.setOnClickListener {
-            val actualIndex = DataStore.transactions.indexOf(transaction)
+            val actualIndex = transactions.indexOf(transaction)
             if (actualIndex >= 0) {
                 val detailFragment = TransactionDetailFragment.newInstance(actualIndex)
                 parentFragmentManager.beginTransaction()

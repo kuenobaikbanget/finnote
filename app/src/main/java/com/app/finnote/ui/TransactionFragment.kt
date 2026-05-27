@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.app.finnote.R
-import com.app.finnote.data.DataStore
+import com.app.finnote.model.Transaction
 import com.app.finnote.ui.chart.OnMonthSelectedListener
 import com.app.finnote.ui.chart.TransactionBarChartRenderer
 import com.app.finnote.ui.component.RecentTransactionsView
@@ -16,11 +17,15 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class TransactionFragment : Fragment(), OnMonthSelectedListener {
+    private val transactionsViewModel: TransactionsViewModel by lazy {
+        ViewModelProvider(this, TransactionsViewModel.Factory)[TransactionsViewModel::class.java]
+    }
     private var recentView: RecentTransactionsView? = null
     private var barChart: BarChart? = null
     private var tvMonthTitle: TextView? = null
     private var tvExpense: TextView? = null
     private var tvIncome: TextView? = null
+    private var transactions: List<Transaction> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,19 +49,23 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
         // Set listener for bar chart month selection
         TransactionBarChartRenderer.setOnMonthSelectedListener(this)
         
-        setupUI()
-
-        updateMonthlySummary(TransactionBarChartRenderer.getSelectedMonthKey())
+        transactionsViewModel.transactions.observe(viewLifecycleOwner) { items ->
+            transactions = items
+            setupUI(items)
+            updateMonthlySummary(TransactionBarChartRenderer.getSelectedMonthKey())
+        }
+        transactionsViewModel.refresh()
     }
 
     override fun onResume() {
         super.onResume()
-        setupUI()
+        transactionsViewModel.refresh()
     }
 
-    private fun setupUI() {
-        val transactions = DataStore.getAll()
-        recentView?.bindData(transactions)
+    private fun setupUI(transactions: List<Transaction>) {
+        recentView?.bindData(transactions) { transaction ->
+            openTransactionDetail(transactions.indexOf(transaction))
+        }
         barChart?.let {
             TransactionBarChartRenderer.render(it, transactions)
         }
@@ -88,13 +97,25 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
             tvMonthTitle?.text = getString(R.string.month_year_format, month, year)
         }
 
-        // Get expense and income data
-        val expense = DataStore.getExpenseByMonth(monthKey)
-        val income = DataStore.getIncomeByMonth(monthKey)
+        val expense = transactions
+            .filter { it.type == "expense" && it.date.startsWith(monthKey) }
+            .sumOf { it.amount }
+        val income = transactions
+            .filter { it.type == "income" && it.date.startsWith(monthKey) }
+            .sumOf { it.amount }
 
         // Format Rp
         val format = NumberFormat.getNumberInstance(Locale.forLanguageTag("id-ID"))
         tvExpense?.text = getString(R.string.currency_rp_format, format.format(expense))
         tvIncome?.text = getString(R.string.currency_rp_format, format.format(income))
+    }
+
+    private fun openTransactionDetail(index: Int) {
+        if (index < 0) return
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, TransactionDetailFragment.newInstance(index))
+            .addToBackStack(null)
+            .commit()
     }
 }

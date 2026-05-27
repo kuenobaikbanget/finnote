@@ -18,9 +18,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.app.finnote.MainActivity
 import com.app.finnote.R
-import com.app.finnote.data.DataStore
+import com.app.finnote.data.repository.HomeSnapshot
 import com.app.finnote.ui.component.RecentTransactionsView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.NumberFormat
@@ -28,6 +29,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class HomeFragment : Fragment() {
+    private val homeViewModel: HomeViewModel by lazy {
+        ViewModelProvider(this, HomeViewModel.Factory)[HomeViewModel::class.java]
+    }
     private var recentView: RecentTransactionsView? = null
     private var isBudgetLimitMode = false
     private var hasPlayedHomeDataAnimation = false
@@ -58,24 +62,26 @@ class HomeFragment : Fragment() {
             (requireActivity() as? MainActivity)?.openProfile()
         }
         layoutNotification.setOnClickListener {
-            val count = DataStore.notificationCount
-            val message = if (count <= 0) {
-                getString(R.string.home_notification_empty)
-            } else {
-                getString(R.string.home_notification_count, count)
+            homeViewModel.uiState.value?.let { state ->
+                val message = if (state.notificationCount <= 0) {
+                    getString(R.string.home_notification_empty)
+                } else {
+                    getString(R.string.home_notification_count, state.notificationCount)
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
         view.findViewById<View>(R.id.fabAddTransaction).setOnClickListener {
             Toast.makeText(requireContext(), R.string.add_transaction_unavailable, Toast.LENGTH_SHORT).show()
         }
 
-        val user = DataStore.currentUser
-        val firstName = user.name.split(" ")[0]
-        tvWelcome.text = getString(R.string.welcome_user, firstName)
-        bindNotificationBadge(tvNotificationBadge, DataStore.notificationCount)
-
-        bindHomeData(view)
+        homeViewModel.uiState.observe(viewLifecycleOwner) { state ->
+            val firstName = state.user.name.split(" ")[0]
+            tvWelcome.text = getString(R.string.welcome_user, firstName)
+            bindNotificationBadge(tvNotificationBadge, state.notificationCount)
+            bindHomeData(view, state)
+        }
+        homeViewModel.refresh()
     }
 
     private fun bindNotificationBadge(badge: TextView, notificationCount: Int) {
@@ -184,7 +190,7 @@ class HomeFragment : Fragment() {
         return start + ((end - start) * progress)
     }
 
-    private fun bindHomeData(view: View) {
+    private fun bindHomeData(view: View, state: HomeSnapshot) {
         val tvIncome = view.findViewById<TextView>(R.id.tvIncome)
         val tvExpense = view.findViewById<TextView>(R.id.tvExpense)
         val tvMonthlyActivityTitle = view.findViewById<TextView>(R.id.tvMonthlyActivityTitle)
@@ -197,10 +203,10 @@ class HomeFragment : Fragment() {
         val cardBudget = view.findViewById<View>(R.id.cardBudget)
         val progressBudget = view.findViewById<ProgressBar>(R.id.progressBudget)
         progressBudget.max = BUDGET_PROGRESS_MAX
-        val monthKey = DataStore.getCurrentMonthKey()
-        val monthlyLimit = DataStore.getMonthlyLimit(monthKey)
-        val monthlyIncome = DataStore.getIncomeByMonth(monthKey)
-        val monthlyExpense = DataStore.getExpenseByMonth(monthKey)
+        val monthKey = state.monthKey
+        val monthlyLimit = state.monthlyLimit
+        val monthlyIncome = state.monthlyIncome
+        val monthlyExpense = state.monthlyExpense
         val remainingBudget = (monthlyLimit - monthlyExpense).coerceAtLeast(0)
         val budgetProgress = if (monthlyLimit <= 0) {
             0
@@ -269,8 +275,19 @@ class HomeFragment : Fragment() {
             maxAmount = comparisonMax
         )
         progressBudget.contentDescription = getString(R.string.budget_usage_format, currencyFormatter.format(monthlyExpense), currencyFormatter.format(monthlyLimit))
-        recentView?.bindData(DataStore.getAll())
+        recentView?.bindData(state.transactions) { transaction ->
+            openTransactionDetail(state.transactions.indexOf(transaction))
+        }
         hasPlayedHomeDataAnimation = true
+    }
+
+    private fun openTransactionDetail(index: Int) {
+        if (index < 0) return
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, TransactionDetailFragment.newInstance(index))
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun showEditBudgetLimitDialog(monthKey: String, currentLimit: Int) {
@@ -297,9 +314,8 @@ class HomeFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            DataStore.setMonthlyLimit(monthKey, limit)
+            homeViewModel.setMonthlyLimit(monthKey, limit)
             Toast.makeText(requireContext(), R.string.budget_edit_success, Toast.LENGTH_SHORT).show()
-            view?.let { bindHomeData(it) }
             dialog.dismiss()
         }
     }
@@ -446,7 +462,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (hasBoundHomeData) {
-            view?.let { bindHomeData(it) }
+            homeViewModel.refresh()
         } else {
             hasBoundHomeData = true
         }
