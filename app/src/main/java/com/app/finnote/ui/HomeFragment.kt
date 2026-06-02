@@ -67,7 +67,10 @@ class HomeFragment : Fragment() {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
         view.findViewById<View>(R.id.fabAddTransaction).setOnClickListener {
-            Toast.makeText(requireContext(), R.string.add_transaction_unavailable, Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, AddTransactionFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         val user = DataStore.currentUser

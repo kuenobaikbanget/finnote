@@ -72,11 +72,9 @@ class TransactionDetailFragment : Fragment() {
             maximumFractionDigits = 0
         }
 
-        // Amount hero
         val tvAmount = view.findViewById<TextView>(R.id.tvAmount)
         tvAmount.text = currencyFormatter.format(transaction.amount)
 
-        // Type icon rotation and tint
         val ivIcon = view.findViewById<ImageView>(R.id.ivIcon)
         val typeColor = if (isIncome) "#2f6f44".toColorInt() else "#ff6b6c".toColorInt()
         ivIcon.rotation = if (isIncome) 0f else 180f
@@ -94,7 +92,6 @@ class TransactionDetailFragment : Fragment() {
         }
         view.findViewById<TextView>(R.id.tvTypeDetail).text = typeLabel
 
-        // Category badge and detail row
         val tvCategory = view.findViewById<TextView>(R.id.tvCategory)
         val tvCategoryDetail = view.findViewById<TextView>(R.id.tvCategoryDetail)
         if (transaction.category.isNotBlank()) {

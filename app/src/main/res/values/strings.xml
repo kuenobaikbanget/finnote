@@ -46,6 +46,7 @@
     <string name="home_notification_empty">Belum ada notifikasi.</string>
     <string name="home_notification_count">%1$d notifikasi tersedia.</string>
     <string name="add_transaction_unavailable">Fitur tambah transaksi belum tersedia.</string>
+    <string name="add_transaction_success">Transaksi tersimpan.</string>
 
     <!-- Icon Descriptions -->
     <string name="home_income_icon_desc">Ikon pemasukan</string>
@@ -60,6 +61,19 @@
     <string name="recent_transactions_see_all">Lihat Semua</string>
     <string name="recent_transactions_empty">Belum ada transaksi.</string>
     <string name="add_transaction">Tambah Transaksi</string>
+    <string name="add_transaction_title">Tambah Transaksi</string>
+    <string name="add_transaction_type_label">Tipe</string>
+    <string name="add_transaction_amount_hint">Nominal</string>
+    <string name="add_transaction_amount_prefix">Rp</string>
+    <string name="add_transaction_title_hint">Judul</string>
+    <string name="add_transaction_title_placeholder">Tulis judul</string>
+    <string name="add_transaction_category_placeholder">Pilih kategori</string>
+    <string name="add_transaction_today">Hari ini</string>
+    <string name="add_transaction_description_hint">Catatan opsional</string>
+    <string name="add_transaction_save">Simpan</string>
+    <string name="add_transaction_amount_error">Nominal harus lebih dari 0.</string>
+    <string name="add_transaction_title_error">Judul perlu diisi.</string>
+    <string name="add_transaction_category_error">Pilih salah satu kategori.</string>
     <string name="transaction_amount_format">%1$s %2$s</string>
     <string name="currency_rp_format">Rp %1$s</string>
     <string name="month_year_format">%1$s %2$s</string>

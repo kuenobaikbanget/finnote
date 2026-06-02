@@ -79,6 +79,10 @@ object DataStore {
 
     fun getAll(): List<Transaction> = transactions.toList()
 
+    fun addTransaction(transaction: Transaction) {
+        transactions.add(transaction)
+    }
+
     fun getMonthlyLimit(monthKey: String): Int {
         return monthlyLimits[monthKey] ?: DEFAULT_MONTHLY_LIMIT
     }

@@ -35,6 +35,10 @@ class AllTransactionsFragment : Fragment() {
 
         // Add Transaction FAB
         view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabAddTransaction).setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, AddTransactionFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         // Load and display all transactions grouped by month

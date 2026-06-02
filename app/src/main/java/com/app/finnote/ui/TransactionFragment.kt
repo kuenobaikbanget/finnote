@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
@@ -31,6 +33,7 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyTransactionInsets(view)
         recentView = view.findViewById(R.id.containerRecent)
         recentView?.setFragmentManager(parentFragmentManager, this)
         barChart = view.findViewById(R.id.barChart)
@@ -46,7 +49,34 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
         
         setupUI()
 
+        view.findViewById<View>(R.id.fabAddTransaction).setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, AddTransactionFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         updateMonthlySummary(TransactionBarChartRenderer.getSelectedMonthKey())
+    }
+
+    private fun applyTransactionInsets(view: View) {
+        val transactionContent = view.findViewById<View>(R.id.transactionContent)
+        val initialPaddingLeft = transactionContent.paddingLeft
+        val initialPaddingTop = transactionContent.paddingTop
+        val initialPaddingRight = transactionContent.paddingRight
+        val initialPaddingBottom = transactionContent.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(transactionContent) { content, insets ->
+            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            content.setPadding(
+                initialPaddingLeft,
+                initialPaddingTop + (statusBars.top / 2),
+                initialPaddingRight,
+                initialPaddingBottom
+            )
+            insets
+        }
+        ViewCompat.requestApplyInsets(transactionContent)
     }
 
     override fun onResume() {
