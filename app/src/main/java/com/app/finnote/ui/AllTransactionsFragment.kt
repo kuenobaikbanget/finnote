@@ -1,12 +1,16 @@
 package com.app.finnote.ui
 
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
@@ -17,6 +21,12 @@ import java.util.Locale
 import androidx.core.graphics.toColorInt
 
 class AllTransactionsFragment : Fragment() {
+    companion object {
+        private const val HEADER_SHRINK_SCROLL_DISTANCE = 140f
+        private const val HEADER_SHRINK_AMOUNT = 0.12f
+        private const val HEADER_FADE_AMOUNT = 0.08f
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +37,9 @@ class AllTransactionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        applyHeaderInsets(view)
+        setupHeaderScrollMotion(view)
 
         // Back button
         view.findViewById<ImageView>(R.id.btnBack).setOnClickListener {
@@ -43,6 +56,63 @@ class AllTransactionsFragment : Fragment() {
 
         // Load and display all transactions grouped by month
         loadTransactions(view)
+    }
+
+    private fun applyHeaderInsets(view: View) {
+        val headerContainer = view.findViewById<View>(R.id.headerContainer)
+        val initialTopMargin = (headerContainer.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            headerContainer.layoutParams =
+                (headerContainer.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    topMargin = initialTopMargin + (statusBars.top / 2)
+                }
+            insets
+        }
+        ViewCompat.requestApplyInsets(view)
+    }
+
+    private fun setupHeaderScrollMotion(view: View) {
+        if (shouldReduceMotion()) return
+
+        val backButton = view.findViewById<View>(R.id.btnBack)
+        val title = view.findViewById<View>(R.id.tvAllTransactionsTitle)
+        val scrollView = view.findViewById<NestedScrollView>(R.id.allTransactionsScrollView)
+
+        title.pivotX = 0f
+        title.post { title.pivotY = title.height / 2f }
+        backButton.post {
+            backButton.pivotX = backButton.width / 2f
+            backButton.pivotY = backButton.height / 2f
+        }
+
+        scrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                val progress = (scrollY / HEADER_SHRINK_SCROLL_DISTANCE).coerceIn(0f, 1f)
+                val scale = 1f - (HEADER_SHRINK_AMOUNT * progress)
+                val alpha = 1f - (HEADER_FADE_AMOUNT * progress)
+
+                title.scaleX = scale
+                title.scaleY = scale
+                title.alpha = alpha
+                backButton.scaleX = scale
+                backButton.scaleY = scale
+                backButton.alpha = alpha
+            }
+        )
+    }
+
+    private fun shouldReduceMotion(): Boolean {
+        return try {
+            Settings.Global.getFloat(
+                requireContext().contentResolver,
+                Settings.Global.ANIMATOR_DURATION_SCALE,
+                1f
+            ) == 0f
+        } catch (_: Exception) {
+            false
+        }
     }
 
     private fun loadTransactions(view: View) {

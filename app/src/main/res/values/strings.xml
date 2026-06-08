@@ -47,6 +47,8 @@
     <string name="home_notification_count">%1$d notifikasi tersedia.</string>
     <string name="add_transaction_unavailable">Fitur tambah transaksi belum tersedia.</string>
     <string name="add_transaction_success">Transaksi tersimpan.</string>
+    <string name="add_transaction_expense_success">Pengeluaran tercatat.</string>
+    <string name="add_transaction_income_success">Pemasukan tercatat.</string>
 
     <!-- Icon Descriptions -->
     <string name="home_income_icon_desc">Ikon pemasukan</string>
@@ -65,15 +67,27 @@
     <string name="add_transaction_type_label">Tipe</string>
     <string name="add_transaction_amount_hint">Nominal</string>
     <string name="add_transaction_amount_prefix">Rp</string>
-    <string name="add_transaction_title_hint">Judul</string>
-    <string name="add_transaction_title_placeholder">Tulis judul</string>
+    <string name="add_transaction_amount_zero_hint">0</string>
+    <string name="add_transaction_title_hint">Nama transaksi</string>
+    <string name="add_transaction_title_placeholder">Makan siang</string>
     <string name="add_transaction_category_placeholder">Pilih kategori</string>
     <string name="add_transaction_today">Hari ini</string>
+    <string name="add_transaction_date_picker_desc">Pilih tanggal</string>
+    <string name="add_transaction_date_row_desc">%1$s. Ketuk untuk pilih tanggal.</string>
     <string name="add_transaction_description_hint">Catatan opsional</string>
     <string name="add_transaction_save">Simpan</string>
     <string name="add_transaction_amount_error">Nominal harus lebih dari 0.</string>
+    <string name="add_transaction_amount_too_large_error">Nominal terlalu besar. Periksa lagi angkanya.</string>
     <string name="add_transaction_title_error">Judul perlu diisi.</string>
     <string name="add_transaction_category_error">Pilih salah satu kategori.</string>
+    <string name="add_transaction_category_group_desc">Pilihan kategori transaksi</string>
+    <string name="add_transaction_category_more_desc">Lainnya, tampilkan kategori lain</string>
+    <string name="add_transaction_state_selected">Dipilih</string>
+    <string name="add_transaction_state_unselected">Belum dipilih</string>
+    <string name="add_transaction_discard_title">Batalkan transaksi?</string>
+    <string name="add_transaction_discard_message">Isi yang belum disimpan akan hilang.</string>
+    <string name="add_transaction_discard_confirm">Batalkan</string>
+    <string name="add_transaction_discard_keep_editing">Lanjut isi</string>
     <string name="transaction_amount_format">%1$s %2$s</string>
     <string name="currency_rp_format">Rp %1$s</string>
     <string name="month_year_format">%1$s %2$s</string>
@@ -84,6 +98,15 @@
     <string name="profile_email">%1$s</string>
     <string name="all_transactions_title">Semua Transaksi</string>
     <string name="profile_joined">Bergabung sejak</string>
+    <string name="profile_joined_format">Bergabung sejak %1$s</string>
+    <string name="profile_photo_desc">Foto profil pengguna</string>
+    <string name="profile_monthly_pulse_title">Kondisi bulan ini</string>
+    <string name="profile_monthly_activity_empty">Belum ada aktivitas bulan ini.</string>
+    <string name="profile_account_stats_title">Ringkasan akun</string>
+    <string name="profile_top_category_label">Kategori terbesar</string>
+    <string name="profile_top_category_empty">Belum ada</string>
+    <string name="profile_transaction_count_format">%1$d transaksi</string>
+    <string name="profile_budget_usage_desc">%1$s, %2$s dari limit %3$s. Terpakai sekitar %4$d persen.</string>
 
     <!-- Transaction Details Strings -->
     <string name="transaction_detail_title">Detail Transaksi</string>

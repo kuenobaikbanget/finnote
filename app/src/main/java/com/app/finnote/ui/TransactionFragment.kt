@@ -1,11 +1,13 @@
 package com.app.finnote.ui
 
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import androidx.core.widget.NestedScrollView
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.app.finnote.R
@@ -18,6 +20,12 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class TransactionFragment : Fragment(), OnMonthSelectedListener {
+    companion object {
+        private const val TITLE_SHRINK_SCROLL_DISTANCE = 140f
+        private const val TITLE_SHRINK_AMOUNT = 0.12f
+        private const val TITLE_FADE_AMOUNT = 0.08f
+    }
+
     private var recentView: RecentTransactionsView? = null
     private var barChart: BarChart? = null
     private var tvMonthTitle: TextView? = null
@@ -34,6 +42,7 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyTransactionInsets(view)
+        setupTitleScrollMotion(view)
         recentView = view.findViewById(R.id.containerRecent)
         recentView?.setFragmentManager(parentFragmentManager, this)
         barChart = view.findViewById(R.id.barChart)
@@ -60,23 +69,52 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
     }
 
     private fun applyTransactionInsets(view: View) {
-        val transactionContent = view.findViewById<View>(R.id.transactionContent)
-        val initialPaddingLeft = transactionContent.paddingLeft
-        val initialPaddingTop = transactionContent.paddingTop
-        val initialPaddingRight = transactionContent.paddingRight
-        val initialPaddingBottom = transactionContent.paddingBottom
+        val titlePage = view.findViewById<View>(R.id.tvTitlePage)
+        val initialTopMargin = (titlePage.layoutParams as ViewGroup.MarginLayoutParams).topMargin
 
-        ViewCompat.setOnApplyWindowInsetsListener(transactionContent) { content, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
             val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            content.setPadding(
-                initialPaddingLeft,
-                initialPaddingTop + (statusBars.top / 2),
-                initialPaddingRight,
-                initialPaddingBottom
-            )
+            titlePage.layoutParams = (titlePage.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                topMargin = initialTopMargin + (statusBars.top / 2)
+            }
             insets
         }
-        ViewCompat.requestApplyInsets(transactionContent)
+        ViewCompat.requestApplyInsets(view)
+    }
+
+    private fun setupTitleScrollMotion(view: View) {
+        if (shouldReduceMotion()) return
+
+        val titlePage = view.findViewById<View>(R.id.tvTitlePage)
+        val scrollView = view.findViewById<NestedScrollView>(R.id.transactionScrollView)
+
+        titlePage.pivotX = 0f
+        titlePage.post {
+            titlePage.pivotY = titlePage.height / 2f
+        }
+
+        scrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                val progress = (scrollY / TITLE_SHRINK_SCROLL_DISTANCE).coerceIn(0f, 1f)
+                val titleScale = 1f - (TITLE_SHRINK_AMOUNT * progress)
+
+                titlePage.scaleX = titleScale
+                titlePage.scaleY = titleScale
+                titlePage.alpha = 1f - (TITLE_FADE_AMOUNT * progress)
+            }
+        )
+    }
+
+    private fun shouldReduceMotion(): Boolean {
+        return try {
+            Settings.Global.getFloat(
+                requireContext().contentResolver,
+                Settings.Global.ANIMATOR_DURATION_SCALE,
+                1f
+            ) == 0f
+        } catch (_: Exception) {
+            false
+        }
     }
 
     override fun onResume() {
