@@ -17,6 +17,7 @@ import com.app.finnote.ui.chart.TransactionBarChartRenderer
 import com.app.finnote.ui.component.RecentTransactionsView
 import com.github.mikephil.charting.charts.BarChart
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TransactionFragment : Fragment(), OnMonthSelectedListener {
@@ -31,6 +32,7 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
     private var tvMonthTitle: TextView? = null
     private var tvExpense: TextView? = null
     private var tvIncome: TextView? = null
+    private var hasCompletedFirstResume = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -119,14 +121,22 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
 
     override fun onResume() {
         super.onResume()
-        setupUI()
+        if (hasCompletedFirstResume) {
+            setupUI()
+        } else {
+            hasCompletedFirstResume = true
+        }
     }
 
     private fun setupUI() {
         val transactions = DataStore.getAll()
         recentView?.bindData(transactions)
         barChart?.let {
-            TransactionBarChartRenderer.render(it, transactions)
+            TransactionBarChartRenderer.render(
+                barChart = it,
+                transactions = transactions,
+                animate = !shouldReduceMotion()
+            )
         }
     }
 
@@ -135,34 +145,45 @@ class TransactionFragment : Fragment(), OnMonthSelectedListener {
     }
 
     private fun updateMonthlySummary(monthKey: String) {
-        val parts = monthKey.split("-")
-        if (parts.size == 2) {
-            val year = parts[0]
-            val month = when (parts[1]) {
-                "01" -> "Januari"
-                "02" -> "Februari"
-                "03" -> "Maret"
-                "04" -> "April"
-                "05" -> "Mei"
-                "06" -> "Juni"
-                "07" -> "Juli"
-                "08" -> "Agustus"
-                "09" -> "September"
-                "10" -> "Oktober"
-                "11" -> "November"
-                "12" -> "Desember"
-                else -> parts[1]
-            }
-            tvMonthTitle?.text = getString(R.string.month_year_format, month, year)
-        }
+        val monthTitle = formatMonthYear(monthKey)
+        tvMonthTitle?.text = monthTitle
 
-        // Get expense and income data
         val expense = DataStore.getExpenseByMonth(monthKey)
         val income = DataStore.getIncomeByMonth(monthKey)
-
-        // Format Rp
         val format = NumberFormat.getNumberInstance(Locale.forLanguageTag("id-ID"))
-        tvExpense?.text = getString(R.string.currency_rp_format, format.format(expense))
-        tvIncome?.text = getString(R.string.currency_rp_format, format.format(income))
+        val expenseText = getString(R.string.currency_rp_format, format.format(expense))
+        val incomeText = getString(R.string.currency_rp_format, format.format(income))
+
+        tvExpense?.text = expenseText
+        tvIncome?.text = incomeText
+        barChart?.contentDescription = getString(
+            R.string.transaction_chart_desc,
+            monthTitle,
+            incomeText,
+            expenseText
+        )
+    }
+
+    private fun formatMonthYear(monthKey: String): String {
+        return try {
+            val parsedMonth = SimpleDateFormat("yyyy-MM", Locale.US).parse(monthKey)
+            if (parsedMonth != null) {
+                SimpleDateFormat("MMMM yyyy", Locale.forLanguageTag("id-ID")).format(parsedMonth)
+            } else {
+                monthKey
+            }
+        } catch (_: Exception) {
+            monthKey
+        }
+    }
+
+    override fun onDestroyView() {
+        TransactionBarChartRenderer.clearOnMonthSelectedListener(this)
+        recentView = null
+        barChart = null
+        tvMonthTitle = null
+        tvExpense = null
+        tvIncome = null
+        super.onDestroyView()
     }
 }

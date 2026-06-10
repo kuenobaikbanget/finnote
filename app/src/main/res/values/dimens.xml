@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="space_lg">16dp</dimen>
+    <dimen name="space_xl">24dp</dimen>
     <dimen name="add_transaction_chip_min_height">40dp</dimen>
     <dimen name="add_transaction_chip_radius">20dp</dimen>
     <dimen name="add_transaction_chip_stroke">1dp</dimen>

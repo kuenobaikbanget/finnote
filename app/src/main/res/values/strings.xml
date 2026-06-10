@@ -62,6 +62,8 @@
     <string name="recent_transactions_title">Transaksi Terakhir</string>
     <string name="recent_transactions_see_all">Lihat Semua</string>
     <string name="recent_transactions_empty">Belum ada transaksi.</string>
+    <string name="all_transactions_empty_hint">Belum ada transaksi. Ketuk tombol tambah untuk mencatat pemasukan atau pengeluaran pertama.</string>
+    <string name="transaction_item_desc">%1$s, %2$s, %3$s, %4$s. Ketuk untuk melihat detail.</string>
     <string name="add_transaction">Tambah Transaksi</string>
     <string name="add_transaction_title">Tambah Transaksi</string>
     <string name="add_transaction_type_label">Tipe</string>
@@ -86,7 +88,7 @@
     <string name="add_transaction_state_unselected">Belum dipilih</string>
     <string name="add_transaction_discard_title">Transaksi belum disimpan</string>
     <string name="add_transaction_discard_message">Kalau keluar sekarang, semua data yang sudah kamu tulis akan hilang.</string>
-    <string name="add_transaction_discard_confirm">Keluar tanpa simpan</string>
+    <string name="add_transaction_discard_confirm">Keluar</string>
     <string name="add_transaction_discard_keep_editing">Tetap isi</string>
     <string name="add_transaction_discard_icon_desc">Catatan transaksi belum disimpan</string>
     <string name="transaction_amount_format">%1$s %2$s</string>
@@ -121,4 +123,5 @@
 
     <!-- Statistic Strings -->
     <string name="statistic_title">Statistik Transaksi</string>
+    <string name="transaction_chart_desc">Grafik 5 bulan terakhir. Bulan dipilih: %1$s. Pemasukan %2$s, pengeluaran %3$s.</string>
 </resources>

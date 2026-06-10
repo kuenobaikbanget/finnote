@@ -251,7 +251,13 @@ class HomeFragment : Fragment() {
                 animateFromZero = false
             )
         }
-        bindCashflowBar(barIncomeComparison, monthlyIncome, comparisonMax, animateHomeData, 0L)
+        bindCashflowBar(
+            barIncomeComparison,
+            monthlyIncome,
+            comparisonMax,
+            animateHomeData,
+            CASHFLOW_INCOME_START_DELAY_MS
+        )
         bindCashflowBar(
             barExpenseComparison,
             monthlyExpense,
@@ -462,8 +468,9 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
-        private const val CASHFLOW_ANIMATION_DURATION_MS = 360L
-        private const val CASHFLOW_EXPENSE_START_DELAY_MS = 80L
+        private const val CASHFLOW_ANIMATION_DURATION_MS = 420L
+        private const val CASHFLOW_INCOME_START_DELAY_MS = 160L
+        private const val CASHFLOW_EXPENSE_START_DELAY_MS = 280L
         private const val BUDGET_ANIMATION_DURATION_MS = 460L
         private const val BUDGET_PROGRESS_SCALE = 10
         private const val BUDGET_PROGRESS_MAX = 100 * BUDGET_PROGRESS_SCALE

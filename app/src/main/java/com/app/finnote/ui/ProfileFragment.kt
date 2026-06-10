@@ -1,9 +1,12 @@
 package com.app.finnote.ui
 
+import android.animation.ValueAnimator
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.PathInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -17,6 +20,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class ProfileFragment : Fragment() {
+    private var budgetProgressAnimator: ValueAnimator? = null
+    private val budgetProgressInterpolator = PathInterpolator(0.22f, 1f, 0.36f, 1f)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,11 +96,11 @@ class ProfileFragment : Fragment() {
             formatter.format(monthlyLimit)
         )
         progressBudget.max = BUDGET_PROGRESS_MAX
-        progressBudget.progress = budgetProgress * BUDGET_PROGRESS_SCALE
         progressBudget.progressDrawable = ContextCompat.getDrawable(
             requireContext(),
             status.progressDrawableRes
         )
+        animateBudgetProgress(progressBudget, budgetProgress)
         progressBudget.contentDescription = getString(
             R.string.profile_budget_usage_desc,
             getString(status.labelRes),
@@ -153,6 +159,31 @@ class ProfileFragment : Fragment() {
             ?.key
     }
 
+    private fun animateBudgetProgress(progressBudget: ProgressBar, targetProgress: Int) {
+        val targetScaledProgress = targetProgress * BUDGET_PROGRESS_SCALE
+        budgetProgressAnimator?.cancel()
+
+        if (!areSystemAnimatorsEnabled() || targetScaledProgress == 0) {
+            progressBudget.progress = targetScaledProgress
+            return
+        }
+
+        progressBudget.progress = 0
+        budgetProgressAnimator = ValueAnimator.ofInt(0, targetScaledProgress).apply {
+            startDelay = BUDGET_ANIMATION_START_DELAY_MS
+            duration = BUDGET_ANIMATION_DURATION_MS
+            interpolator = budgetProgressInterpolator
+            addUpdateListener { animator ->
+                progressBudget.progress = animator.animatedValue as Int
+            }
+            start()
+        }
+    }
+
+    private fun areSystemAnimatorsEnabled(): Boolean {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.O || ValueAnimator.areAnimatorsEnabled()
+    }
+
     private fun formatMonthYear(monthKey: String): String {
         return try {
             val parsedMonth = SimpleDateFormat("yyyy-MM", Locale.US).parse(monthKey)
@@ -173,7 +204,15 @@ class ProfileFragment : Fragment() {
         val textColorRes: Int
     )
 
+    override fun onDestroyView() {
+        budgetProgressAnimator?.cancel()
+        budgetProgressAnimator = null
+        super.onDestroyView()
+    }
+
     companion object {
+        private const val BUDGET_ANIMATION_START_DELAY_MS = 180L
+        private const val BUDGET_ANIMATION_DURATION_MS = 650L
         private const val BUDGET_CAUTION_THRESHOLD = 75
         private const val BUDGET_PROGRESS_SCALE = 10
         private const val BUDGET_PROGRESS_MAX = 100 * BUDGET_PROGRESS_SCALE

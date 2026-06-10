@@ -1,7 +1,6 @@
 package com.app.finnote.ui.component
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -64,7 +63,7 @@ class RecentTransactionsView @JvmOverloads constructor(
             val empty = TextView(context).apply {
                 text = context.getString(R.string.recent_transactions_empty)
                 textSize = 14f
-                setTextColor(ContextCompat.getColor(context, R.color.grey))
+                setTextColor(ContextCompat.getColor(context, R.color.text_muted_accessible))
             }
             listContainer.addView(empty)
             return
@@ -78,28 +77,28 @@ class RecentTransactionsView @JvmOverloads constructor(
             val tvTitle = itemView.findViewById<TextView>(R.id.tvItemTitle)
             val tvAmount = itemView.findViewById<TextView>(R.id.tvItemAmount)
             val ivIcon = itemView.findViewById<android.widget.ImageView>(R.id.ivIcon)
-            val iconContainer = itemView.findViewById<View>(R.id.layoutTransactionIcon)
 
             tvDate.text = formatDate(transaction.date)
             tvTitle.text = transaction.title
             tvAmount.text = formatAmount(transaction)
 
             val isIncome = transaction.type == "income"
-            val colorRes = if (isIncome) R.color.darker_green else R.color.pale_red
-            val tintRes = if (isIncome) R.color.income_tint else R.color.expense_tint
-            val typeDescription = if (isIncome) {
-                context.getString(R.string.home_income_icon_desc)
-            } else {
-                context.getString(R.string.home_expense_icon_desc)
-            }
+            val colorRes = if (isIncome) R.color.green else R.color.pale_red
+            val typeLabel = context.getString(if (isIncome) R.string.home_income_label else R.string.home_expense_label)
             val color = ContextCompat.getColor(context, colorRes)
 
             tvAmount.setTextColor(color)
-            iconContainer.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, tintRes))
             ivIcon?.setColorFilter(color)
             ivIcon?.setImageResource(R.drawable.ic_arrow_down)
-            ivIcon?.rotation = if (isIncome) 0f else 180f
-            ivIcon?.contentDescription = typeDescription
+            ivIcon?.rotation = if (isIncome) 180f else 0f
+            ivIcon?.contentDescription = typeLabel
+            itemView.contentDescription = context.getString(
+                R.string.transaction_item_desc,
+                transaction.title,
+                typeLabel,
+                tvAmount.text.toString(),
+                tvDate.text
+            )
 
             // Handle click to show transaction detail
             itemView.setOnClickListener {

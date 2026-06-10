@@ -1,7 +1,9 @@
 package com.app.finnote.ui.chart
 
 import android.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import com.app.finnote.R
 import com.app.finnote.model.Transaction
 import com.github.mikephil.charting.charts.BarChart
@@ -15,7 +17,6 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import androidx.core.graphics.toColorInt
 
 interface OnMonthSelectedListener {
     fun onMonthSelected(monthKey: String, monthIndex: Int)
@@ -23,16 +24,23 @@ interface OnMonthSelectedListener {
 
 object TransactionBarChartRenderer {
     private var monthKeys = listOf<String>()
-    private var selectedMonthIndex = 4 // Default to current month (last in list)
+    private var selectedMonthIndex = 4
     private var onMonthSelectedListener: OnMonthSelectedListener? = null
     private var barChart: BarChart? = null
-    private var incomeEntries = listOf<BarEntry>()
-    private var expenseEntries = listOf<BarEntry>()
     private var incomeDataSet: BarDataSet? = null
     private var expenseDataSet: BarDataSet? = null
 
     fun setOnMonthSelectedListener(listener: OnMonthSelectedListener) {
         onMonthSelectedListener = listener
+    }
+
+    fun clearOnMonthSelectedListener(listener: OnMonthSelectedListener) {
+        if (onMonthSelectedListener === listener) {
+            onMonthSelectedListener = null
+        }
+        barChart = null
+        incomeDataSet = null
+        expenseDataSet = null
     }
 
     fun getSelectedMonthKey(): String {
@@ -45,91 +53,95 @@ object TransactionBarChartRenderer {
 
     private fun updateHighlight() {
         barChart?.let { chart ->
-            // Update colors for fade effect
-            val incomeFull = "#65c769".toColorInt()
-            val incomeFade = "#9965c769".toColorInt() // ~60% opacity
-            val expenseFull = "#ff6b6c".toColorInt()
-            val expenseFade = "#99ff6b6c".toColorInt() // ~60% opacity
+            val context = chart.context
+            val incomeFull = ContextCompat.getColor(context, R.color.green)
+            val incomeFade = ColorUtils.setAlphaComponent(incomeFull, 153)
+            val expenseFull = ContextCompat.getColor(context, R.color.pale_red)
+            val expenseFade = ColorUtils.setAlphaComponent(expenseFull, 153)
 
-            val incomeColors = monthKeys.indices.map { i ->
+            incomeDataSet?.colors = monthKeys.indices.map { i ->
                 if (i == selectedMonthIndex) incomeFull else incomeFade
             }
-            val expenseColors = monthKeys.indices.map { i ->
+            expenseDataSet?.colors = monthKeys.indices.map { i ->
                 if (i == selectedMonthIndex) expenseFull else expenseFade
             }
 
-            incomeDataSet?.colors = incomeColors
-            expenseDataSet?.colors = expenseColors
-
-            val highlights = mutableListOf<Highlight>()
             val x = selectedMonthIndex.toFloat() + 0.5f
-            
-            // Income bar entry (dataSetIndex 0)
-            highlights.add(Highlight(x, 0f, 0))
-            // Expense bar entry (dataSetIndex 1)
-            highlights.add(Highlight(x, 0f, 1))
-            
-            chart.highlightValues(highlights.toTypedArray())
+            chart.highlightValues(
+                arrayOf(
+                    Highlight(x, 0f, 0),
+                    Highlight(x, 0f, 1)
+                )
+            )
             chart.invalidate()
         }
     }
 
     fun render(
         barChart: BarChart,
-        transactions: List<Transaction>
+        transactions: List<Transaction>,
+        animate: Boolean = true
     ) {
         this.barChart = barChart
         val context = barChart.context
         val typeface = ResourcesCompat.getFont(context, R.font.inter)
-        
-        // Hitung 5 bulan terakhir menggunakan Calendar
-        val monthsLabels = mutableListOf<String>()
-        monthKeys = mutableListOf()
-        val sdfLabel = SimpleDateFormat("MMM", Locale.forLanguageTag("id-ID"))
-        val sdfKey = SimpleDateFormat("yyyy-MM", Locale.US)
+        val incomeColor = ContextCompat.getColor(context, R.color.green)
+        val expenseColor = ContextCompat.getColor(context, R.color.pale_red)
+        val mutedTextColor = ContextCompat.getColor(context, R.color.text_muted_accessible)
+        val inkColor = ContextCompat.getColor(context, R.color.black)
+        val dividerColor = ContextCompat.getColor(context, R.color.divider_mist)
+
+        val monthLabels = mutableListOf<String>()
+        val generatedMonthKeys = mutableListOf<String>()
+        val labelFormat = SimpleDateFormat("MMM", Locale.forLanguageTag("id-ID"))
+        val keyFormat = SimpleDateFormat("yyyy-MM", Locale.US)
 
         for (i in 4 downTo 0) {
             val calendar = Calendar.getInstance()
             calendar.add(Calendar.MONTH, -i)
-            monthsLabels.add(sdfLabel.format(calendar.time))
-            (monthKeys as MutableList<String>).add(sdfKey.format(calendar.time))
+            monthLabels.add(labelFormat.format(calendar.time))
+            generatedMonthKeys.add(keyFormat.format(calendar.time))
+        }
+        monthKeys = generatedMonthKeys
+        selectedMonthIndex = selectedMonthIndex.coerceIn(monthKeys.indices)
+
+        val incomeEntries = monthKeys.mapIndexed { index, key ->
+            BarEntry(
+                index.toFloat(),
+                transactions
+                    .filter { it.type == "income" && it.date.startsWith(key) }
+                    .sumOf { it.amount }
+                    .toFloat()
+            )
         }
 
-        val incomeByMonth = monthKeys.map { key ->
-            transactions
-                .filter { it.type == "income" && it.date.startsWith(key) }
-                .sumOf { it.amount }
-                .toFloat()
+        val expenseEntries = monthKeys.mapIndexed { index, key ->
+            BarEntry(
+                index.toFloat(),
+                transactions
+                    .filter { it.type == "expense" && it.date.startsWith(key) }
+                    .sumOf { it.amount }
+                    .toFloat()
+            )
         }
 
-        val expenseByMonth = monthKeys.map { key ->
-            transactions
-                .filter { it.type == "expense" && it.date.startsWith(key) }
-                .sumOf { it.amount }
-                .toFloat()
-        }
-
-        incomeEntries = incomeByMonth.mapIndexed { i, v -> BarEntry(i.toFloat(), v) }
-        expenseEntries = expenseByMonth.mapIndexed { i, v -> BarEntry(i.toFloat(), v) }
-
-        incomeDataSet = BarDataSet(incomeEntries, "Pemasukan").apply {
-            color = "#65c769".toColorInt()
+        incomeDataSet = BarDataSet(incomeEntries, context.getString(R.string.home_income_label)).apply {
+            color = incomeColor
             valueTextColor = Color.TRANSPARENT
             setDrawValues(false)
-            highLightAlpha = 0 // Remove dark overlay
+            highLightAlpha = 0
         }
 
-        expenseDataSet = BarDataSet(expenseEntries, "Pengeluaran").apply {
-            color = "#ff6b6c".toColorInt()
+        expenseDataSet = BarDataSet(expenseEntries, context.getString(R.string.home_expense_label)).apply {
+            color = expenseColor
             valueTextColor = Color.TRANSPARENT
             setDrawValues(false)
-            highLightAlpha = 0 // Remove dark overlay
+            highLightAlpha = 0
         }
 
         val groupSpace = 0.3f
         val barSpace = 0.05f
         val barWidth = 0.3f
-
         val barData = BarData(incomeDataSet, expenseDataSet).apply {
             this.barWidth = barWidth
         }
@@ -147,10 +159,8 @@ object TransactionBarChartRenderer {
             setTouchEnabled(true)
             setPinchZoom(false)
             setScaleEnabled(false)
-
             extraBottomOffset = 20f
 
-            // Set up click listener
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: com.github.mikephil.charting.data.Entry?, h: Highlight?) {
                     h?.let {
@@ -163,9 +173,7 @@ object TransactionBarChartRenderer {
                     }
                 }
 
-                override fun onNothingSelected() {
-                    // Keep the current selection
-                }
+                override fun onNothingSelected() = Unit
             })
 
             typeface?.let {
@@ -175,38 +183,35 @@ object TransactionBarChartRenderer {
             }
 
             xAxis.apply {
-                valueFormatter = IndexAxisValueFormatter(monthsLabels)
+                valueFormatter = IndexAxisValueFormatter(monthLabels)
                 position = XAxis.XAxisPosition.BOTTOM
                 granularity = 1f
                 setCenterAxisLabels(true)
                 setDrawGridLines(false)
                 setDrawAxisLine(false)
-                textColor = "#8a8a8a".toColorInt()
-                textSize = 10f
+                textColor = mutedTextColor
+                textSize = 11f
                 yOffset = 10f
-                
                 axisMinimum = 0f
-                axisMaximum = barData.getGroupWidth(groupSpace, barSpace) * monthsLabels.size
+                axisMaximum = barData.getGroupWidth(groupSpace, barSpace) * monthLabels.size
             }
 
             axisLeft.apply {
                 setDrawGridLines(true)
-                gridColor = "#F0F0F0".toColorInt()
+                gridColor = dividerColor
                 setDrawAxisLine(false)
-                textColor = "#8a8a8a".toColorInt()
-                textSize = 10f
+                textColor = mutedTextColor
+                textSize = 11f
                 xOffset = 10f
                 axisMinimum = 0f
-
                 granularity = 500000f
                 isGranularityEnabled = true
-
                 valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
                         return when {
                             value >= 1000000f -> {
                                 val millions = value / 1000000f
-                                if (millions % 1 == 0f) "${millions.toInt()}jt" 
+                                if (millions % 1 == 0f) "${millions.toInt()}jt"
                                 else "${String.format(Locale.US, "%.1f", millions).replace(".", ",")}jt"
                             }
                             value >= 1000f -> "${(value / 1000f).toInt()}rb"
@@ -215,7 +220,7 @@ object TransactionBarChartRenderer {
                     }
                 }
             }
-            
+
             axisRight.isEnabled = false
 
             legend.apply {
@@ -227,24 +232,25 @@ object TransactionBarChartRenderer {
                 yOffset = 10f
                 form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
                 textSize = 11f
-                textColor = "#0d1f2d".toColorInt()
-
+                textColor = inkColor
 
                 val incomeEntry = com.github.mikephil.charting.components.LegendEntry().apply {
-                    label = "Pemasukan"
-                    formColor = "#65c769".toColorInt()
+                    label = context.getString(R.string.home_income_label)
+                    formColor = incomeColor
                     form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
                 }
                 val expenseEntry = com.github.mikephil.charting.components.LegendEntry().apply {
-                    label = "Pengeluaran"
-                    formColor = "#ff6b6c".toColorInt()
+                    label = context.getString(R.string.home_expense_label)
+                    formColor = expenseColor
                     form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
                 }
                 setCustom(listOf(incomeEntry, expenseEntry))
             }
 
             xAxis.labelRotationAngle = 0f
-            animateY(1000, com.github.mikephil.charting.animation.Easing.EaseInOutQuad)
+            if (animate) {
+                animateY(240, com.github.mikephil.charting.animation.Easing.EaseOutQuart)
+            }
 
             updateHighlight()
             invalidate()
