@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
 import com.app.finnote.model.Transaction
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.chip.Chip
@@ -65,6 +65,7 @@ class AddTransactionFragment : Fragment() {
     private var isDirty = false
     private var isRestoringDraft = false
     private var isFormattingAmount = false
+    private var discardDialog: BottomSheetDialog? = null
     private val selectedDate = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val displayDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
@@ -612,15 +613,49 @@ class AddTransactionFragment : Fragment() {
             return
         }
 
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.add_transaction_discard_title)
-            .setMessage(R.string.add_transaction_discard_message)
-            .setNegativeButton(R.string.add_transaction_discard_keep_editing, null)
-            .setPositiveButton(R.string.add_transaction_discard_confirm) { _, _ ->
-                isDirty = false
-                parentFragmentManager.popBackStack()
+        discardDialog?.dismiss()
+
+        val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_discard_transaction, null)
+        val sheetContent = sheetView.findViewById<View>(R.id.discardSheetContent)
+        val initialPaddingBottom = sheetContent.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(sheetContent) { currentView, insets ->
+            val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            currentView.setPadding(
+                currentView.paddingLeft,
+                currentView.paddingTop,
+                currentView.paddingRight,
+                initialPaddingBottom + navBars.bottom
+            )
+            insets
+        }
+
+        val dialog = BottomSheetDialog(requireContext()).apply {
+            setContentView(sheetView)
+            setCanceledOnTouchOutside(true)
+            setOnDismissListener { discardDialog = null }
+        }
+        discardDialog = dialog
+
+        sheetView.findViewById<MaterialButton>(R.id.btnDiscardKeepEditing).setOnClickListener {
+            dialog.dismiss()
+        }
+        sheetView.findViewById<MaterialButton>(R.id.btnDiscardConfirm).setOnClickListener {
+            isDirty = false
+            dialog.dismiss()
+            parentFragmentManager.popBackStack()
+        }
+
+        dialog.show()
+        dialog.window?.setBackgroundDrawable(
+            android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
+        )
+        dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            ?.apply {
+                setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT)
+                (parent as? View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
             }
-            .show()
+        ViewCompat.requestApplyInsets(sheetContent)
     }
 
     private fun restoreDraft(savedInstanceState: Bundle?) {

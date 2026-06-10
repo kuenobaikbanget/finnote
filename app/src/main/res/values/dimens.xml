@@ -3,4 +3,7 @@
     <dimen name="add_transaction_chip_min_height">40dp</dimen>
     <dimen name="add_transaction_chip_radius">20dp</dimen>
     <dimen name="add_transaction_chip_stroke">1dp</dimen>
+    <dimen name="discard_dialog_radius">24dp</dimen>
+    <dimen name="discard_dialog_screen_margin">24dp</dimen>
+    <dimen name="discard_dialog_max_width">360dp</dimen>
 </resources>

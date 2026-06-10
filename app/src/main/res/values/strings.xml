@@ -84,10 +84,11 @@
     <string name="add_transaction_category_more_desc">Lainnya, tampilkan kategori lain</string>
     <string name="add_transaction_state_selected">Dipilih</string>
     <string name="add_transaction_state_unselected">Belum dipilih</string>
-    <string name="add_transaction_discard_title">Batalkan transaksi?</string>
-    <string name="add_transaction_discard_message">Isi yang belum disimpan akan hilang.</string>
-    <string name="add_transaction_discard_confirm">Batalkan</string>
-    <string name="add_transaction_discard_keep_editing">Lanjut isi</string>
+    <string name="add_transaction_discard_title">Transaksi belum disimpan</string>
+    <string name="add_transaction_discard_message">Kalau keluar sekarang, semua data yang sudah kamu tulis akan hilang.</string>
+    <string name="add_transaction_discard_confirm">Keluar tanpa simpan</string>
+    <string name="add_transaction_discard_keep_editing">Tetap isi</string>
+    <string name="add_transaction_discard_icon_desc">Catatan transaksi belum disimpan</string>
     <string name="transaction_amount_format">%1$s %2$s</string>
     <string name="currency_rp_format">Rp %1$s</string>
     <string name="month_year_format">%1$s %2$s</string>
