@@ -57,64 +57,96 @@
             android:paddingEnd="16dp"
             android:paddingBottom="24dp">
 
-            <FrameLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/amountCard"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:cardMaxElevation="2dp"
+                app:strokeColor="@color/divider_mist"
+                app:strokeWidth="1dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilAmount"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/add_transaction_amount_hint"
-                    android:labelFor="@id/etAmount"
-                    app:boxBackgroundMode="none"
-                    app:errorTextColor="@color/expense_coral_accessible"
-                    app:hintEnabled="false">
+                    android:orientation="vertical"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="12dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAmount"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:fontFamily="@font/inter_bold"
+                        android:baselineAligned="false"
                         android:gravity="center"
-                        android:hint="@string/add_transaction_amount_zero_hint"
-                        android:includeFontPadding="true"
-                        android:inputType="number"
-                        android:maxLines="1"
                         android:minHeight="88dp"
-                        android:paddingTop="4dp"
-                        android:paddingStart="40dp"
-                        android:paddingEnd="40dp"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/text_muted_accessible"
-                        android:textSize="34sp"
-                        tools:text="15000" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="88dp"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:fontFamily="@font/inter_bold"
-                    android:gravity="center_vertical"
-                    android:includeFontPadding="true"
-                    android:text="@string/add_transaction_amount_prefix"
-                    android:textColor="@color/deep_teal"
-                    android:textSize="24sp" />
-            </FrameLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="88dp"
+                            android:fontFamily="@font/inter_bold"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
+                            android:text="@string/add_transaction_amount_prefix"
+                            android:textColor="@color/deep_teal"
+                            android:textSize="24sp" />
 
-            <View
-                android:id="@+id/amountDivider"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="12dp"
-                android:background="@color/pale_red" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:hint="@string/add_transaction_amount_hint"
+                            android:labelFor="@id/etAmount"
+                            app:boxBackgroundMode="none"
+                            app:errorTextColor="@color/expense_coral_accessible"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/inter_bold"
+                                android:gravity="center_vertical"
+                                android:hint="@string/add_transaction_amount_zero_hint"
+                                android:includeFontPadding="true"
+                                android:inputType="number"
+                                android:maxLines="1"
+                                android:maxWidth="240dp"
+                                android:minWidth="44dp"
+                                android:minHeight="88dp"
+                                android:paddingStart="0dp"
+                                android:paddingTop="4dp"
+                                android:paddingEnd="0dp"
+                                android:paddingBottom="4dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/text_muted_accessible"
+                                android:textSize="34sp"
+                                tools:text="15000" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvAmountError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="-4dp"
+                        android:layout_marginEnd="16dp"
+                        android:accessibilityLiveRegion="polite"
+                        android:gravity="center"
+                        android:textColor="@color/expense_coral_accessible"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="Isi nominal dulu." />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/typeToggle"
@@ -153,6 +185,7 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/titleCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -182,16 +215,34 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:fontFamily="@font/inter_bold"
-                            android:includeFontPadding="false"
-                            android:labelFor="@id/etTitle"
-                            android:text="@string/add_transaction_title_hint"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
+                                android:includeFontPadding="false"
+                                android:labelFor="@id/etTitle"
+                                android:text="@string/add_transaction_title_hint"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/badgeTitleRequired"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:fontFamily="@font/inter_bold"
+                                android:importantForAccessibility="no"
+                                android:text="@string/add_transaction_required_indicator"
+                                android:textColor="@color/pale_red"
+                                android:textSize="16sp" />
+                        </LinearLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/tilTitle"
@@ -265,15 +316,33 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:fontFamily="@font/inter_bold"
-                            android:labelFor="@id/chipGroupCategory"
-                            android:text="@string/category"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
+                                android:labelFor="@id/chipGroupCategory"
+                                android:text="@string/category"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/badgeCategoryRequired"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:fontFamily="@font/inter_bold"
+                                android:importantForAccessibility="no"
+                                android:text="@string/add_transaction_required_indicator"
+                                android:textColor="@color/pale_red"
+                                android:textSize="16sp" />
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/tvCategoryValue"
@@ -314,9 +383,14 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/dateCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:contentDescription="@string/add_transaction_date_picker_desc"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="2dp"
@@ -329,10 +403,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="64dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:contentDescription="@string/add_transaction_date_picker_desc"
-                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingStart="16dp"
@@ -340,17 +410,34 @@
                     android:paddingEnd="14dp"
                     android:paddingBottom="10dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_bold"
                         android:gravity="center_vertical"
-                        android:includeFontPadding="false"
-                        android:labelFor="@id/etDate"
-                        android:text="@string/date"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
+                            android:labelFor="@id/etDate"
+                            android:text="@string/date"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="@font/inter_bold"
+                            android:importantForAccessibility="no"
+                            android:text="@string/add_transaction_required_indicator"
+                            android:textColor="@color/pale_red"
+                            android:textSize="16sp" />
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilDate"
@@ -388,9 +475,9 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:importantForAccessibility="no"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_arrow_down"
-                        app:tint="@color/grey" />
+                        android:padding="10dp"
+                        android:src="@drawable/ic_calender"
+                        app:tint="@color/deep_teal" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

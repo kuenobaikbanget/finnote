@@ -76,12 +76,13 @@
     <string name="add_transaction_today">Hari ini</string>
     <string name="add_transaction_date_picker_desc">Pilih tanggal</string>
     <string name="add_transaction_date_row_desc">%1$s. Ketuk untuk pilih tanggal.</string>
-    <string name="add_transaction_description_hint">Catatan opsional</string>
+    <string name="add_transaction_description_hint">Beli nasi padang</string>
     <string name="add_transaction_save">Simpan</string>
-    <string name="add_transaction_amount_error">Nominal harus lebih dari 0.</string>
+    <string name="add_transaction_amount_error">Nominal wajib diisi.</string>
     <string name="add_transaction_amount_too_large_error">Nominal terlalu besar. Periksa lagi angkanya.</string>
-    <string name="add_transaction_title_error">Judul perlu diisi.</string>
-    <string name="add_transaction_category_error">Pilih salah satu kategori.</string>
+    <string name="add_transaction_title_error">Nama transaksi wajib diisi.</string>
+    <string name="add_transaction_category_error">Pilih satu kategori.</string>
+    <string name="add_transaction_required_indicator">*</string>
     <string name="add_transaction_category_group_desc">Pilihan kategori transaksi</string>
     <string name="add_transaction_category_more_desc">Lainnya, tampilkan kategori lain</string>
     <string name="add_transaction_state_selected">Dipilih</string>
@@ -94,6 +95,15 @@
     <string name="transaction_amount_format">%1$s %2$s</string>
     <string name="currency_rp_format">Rp %1$s</string>
     <string name="month_year_format">%1$s %2$s</string>
+    <string name="transaction_success_title">Transaksi tersimpan</string>
+    <string name="transaction_success_message">Catatanmu sudah masuk ke FinNote.</string>
+    <string name="transaction_success_fallback_message">Catatan transaksi sudah tersimpan.</string>
+    <string name="transaction_success_view_detail">Lihat Detail Transaksi</string>
+    <string name="transaction_success_add_another">Tambah Transaksi Lagi</string>
+    <string name="transaction_success_view_transactions">Lihat Transaksi</string>
+    <string name="transaction_success_empty_value">-</string>
+    <string name="transaction_success_icon_desc">Transaksi berhasil disimpan</string>
+    <string name="transaction_success_summary_desc">%1$s %2$s. %3$s, kategori %4$s, tanggal %5$s.</string>
 
     <!-- Profile Strings -->
     <string name="profil">Profil</string>

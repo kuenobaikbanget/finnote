@@ -25,9 +25,9 @@ import com.app.finnote.model.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -65,6 +65,7 @@ class AddTransactionFragment : Fragment() {
     private var isDirty = false
     private var isRestoringDraft = false
     private var isFormattingAmount = false
+    private var hasAttemptedSave = false
     private var discardDialog: BottomSheetDialog? = null
     private val selectedDate = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -75,6 +76,9 @@ class AddTransactionFragment : Fragment() {
     private lateinit var typeToggle: MaterialButtonToggleGroup
     private lateinit var btnExpense: MaterialButton
     private lateinit var btnIncome: MaterialButton
+    private lateinit var amountCard: MaterialCardView
+    private lateinit var titleCard: MaterialCardView
+    private lateinit var categoryCard: MaterialCardView
     private lateinit var tilAmount: TextInputLayout
     private lateinit var tilTitle: TextInputLayout
     private lateinit var tilDate: TextInputLayout
@@ -85,9 +89,9 @@ class AddTransactionFragment : Fragment() {
     private lateinit var dateRow: View
     private lateinit var chipGroupCategory: ChipGroup
     private lateinit var tvCategoryValue: TextView
+    private lateinit var tvAmountError: TextView
     private lateinit var tvTitleError: TextView
     private lateinit var tvCategoryError: TextView
-    private lateinit var amountDivider: View
     private lateinit var saveBar: View
     private lateinit var btnSave: MaterialButton
 
@@ -113,6 +117,9 @@ class AddTransactionFragment : Fragment() {
         typeToggle = view.findViewById(R.id.typeToggle)
         btnExpense = view.findViewById(R.id.btnTypeExpense)
         btnIncome = view.findViewById(R.id.btnTypeIncome)
+        amountCard = view.findViewById(R.id.amountCard)
+        titleCard = view.findViewById(R.id.titleCard)
+        categoryCard = view.findViewById(R.id.categoryCard)
         tilAmount = view.findViewById(R.id.tilAmount)
         tilTitle = view.findViewById(R.id.tilTitle)
         tilDate = view.findViewById(R.id.tilDate)
@@ -120,12 +127,12 @@ class AddTransactionFragment : Fragment() {
         etTitle = view.findViewById(R.id.etTitle)
         etDate = view.findViewById(R.id.etDate)
         etDescription = view.findViewById(R.id.etDescription)
-        dateRow = view.findViewById(R.id.dateRow)
+        dateRow = view.findViewById(R.id.dateCard)
         chipGroupCategory = view.findViewById(R.id.chipGroupCategory)
         tvCategoryValue = view.findViewById(R.id.tvCategoryValue)
+        tvAmountError = view.findViewById(R.id.tvAmountError)
         tvTitleError = view.findViewById(R.id.tvTitleError)
         tvCategoryError = view.findViewById(R.id.tvCategoryError)
-        amountDivider = view.findViewById(R.id.amountDivider)
         saveBar = view.findViewById(R.id.saveBar)
         btnSave = view.findViewById(R.id.btnSaveTransaction)
     }
@@ -314,12 +321,6 @@ class AddTransactionFragment : Fragment() {
         )
         updateTypeButtonA11y(btnExpense, getString(R.string.home_expense_label), expenseSelected)
         updateTypeButtonA11y(btnIncome, getString(R.string.home_income_label), incomeSelected)
-        amountDivider.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            ContextCompat.getColor(
-                requireContext(),
-                if (transactionType == TYPE_INCOME) R.color.chart_income_green else R.color.pale_red
-            )
-        )
     }
 
     private fun styleTypeButton(
@@ -441,7 +442,12 @@ class AddTransactionFragment : Fragment() {
         }
     }
 
+    private fun Int.dpToPxInt(): Int {
+        return (this * resources.displayMetrics.density).toInt()
+    }
+
     private fun saveTransaction() {
+        hasAttemptedSave = true
         val amount = parseAmount()
         val title = etTitle.text.toString().trim()
         val category = selectedCategory
@@ -449,34 +455,29 @@ class AddTransactionFragment : Fragment() {
 
         btnSave.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
 
-        DataStore.addTransaction(
-            Transaction(
-                title = title,
-                amount = amount!!.toInt(),
-                date = dateFormat.format(selectedDate.time),
-                type = transactionType,
-                category = category!!,
-                description = etDescription.text.toString().trim()
-            )
+        val transaction = Transaction(
+            title = title,
+            amount = amount!!.toInt(),
+            date = dateFormat.format(selectedDate.time),
+            type = transactionType,
+            category = category!!,
+            description = etDescription.text.toString().trim()
         )
+        DataStore.addTransaction(transaction)
+        val savedTransactionIndex = DataStore.transactions.lastIndex
+
         isDirty = false
-        parentFragmentManager.popBackStack()
-        Snackbar.make(
-            requireActivity().findViewById(R.id.fragmentContainer),
-            if (transactionType == TYPE_INCOME) {
-                R.string.add_transaction_income_success
-            } else {
-                R.string.add_transaction_expense_success
-            },
-            Snackbar.LENGTH_SHORT
-        ).show()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, TransactionSuccessFragment.newInstance(savedTransactionIndex))
+            .commit()
     }
 
     private fun updateSaveState() {
-        btnSave.isEnabled = validateAmount(showError = false) &&
-            validateTitle(showError = false) &&
-            etDate.text.isNotBlank() &&
-            selectedCategory != null
+        val amountValid = validateAmount(showError = false)
+        val titleValid = validateTitle(showError = false)
+        val categoryValid = selectedCategory != null
+        updateRequiredTrail(amountValid, titleValid, categoryValid)
+        btnSave.isEnabled = true
     }
 
     private fun validateFormForSave(amount: Long?, category: String?): Boolean {
@@ -485,10 +486,70 @@ class AddTransactionFragment : Fragment() {
         val categoryValid = validateCategory(showError = true)
         val isValid = amountValid && titleValid && categoryValid && amount != null && category != null
 
+        updateRequiredTrail(amountValid, titleValid, categoryValid)
         if (!isValid) {
+            animateMissingRequiredCards(amountValid, titleValid, categoryValid)
             focusFirstInvalidField(amountValid, titleValid, categoryValid)
         }
         return isValid
+    }
+
+    private fun updateRequiredTrail(
+        amountValid: Boolean,
+        titleValid: Boolean,
+        categoryValid: Boolean
+    ) {
+        applyRequiredState(
+            card = amountCard,
+            showMissing = hasAttemptedSave && !amountValid
+        )
+        applyRequiredState(
+            card = titleCard,
+            showMissing = hasAttemptedSave && !titleValid
+        )
+        applyRequiredState(
+            card = categoryCard,
+            showMissing = hasAttemptedSave && !categoryValid
+        )
+    }
+
+    private fun applyRequiredState(
+        card: MaterialCardView,
+        showMissing: Boolean
+    ) {
+        val context = requireContext()
+        val strokeColor = ContextCompat.getColor(
+            context,
+            if (showMissing) R.color.pale_red else R.color.divider_mist
+        )
+        card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
+        card.setStrokeColor(strokeColor)
+        card.strokeWidth = if (showMissing) 2.dpToPxInt() else 1.dpToPxInt()
+    }
+
+    private fun animateMissingRequiredCards(
+        amountValid: Boolean,
+        titleValid: Boolean,
+        categoryValid: Boolean
+    ) {
+        if (shouldReduceMotion()) return
+
+        listOf(
+            amountCard to amountValid,
+            titleCard to titleValid,
+            categoryCard to categoryValid
+        ).forEach { (card, isValid) ->
+            if (isValid) return@forEach
+            card.animate().cancel()
+            card.scaleX = 0.99f
+            card.scaleY = 0.99f
+            card.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(REQUIRED_CARD_PULSE_DURATION_MS)
+                .setInterpolator(delightInterpolator)
+                .start()
+        }
     }
 
     private fun focusFirstInvalidField(
@@ -507,13 +568,16 @@ class AddTransactionFragment : Fragment() {
         val amount = parseAmount()
         val isValid = amount != null && amount in 1..MAX_AMOUNT
         if (showError) {
-            setTextFieldError(tilAmount, when {
+            val error = when {
                 isValid -> null
                 amount != null && amount > MAX_AMOUNT -> {
                     getString(R.string.add_transaction_amount_too_large_error)
                 }
                 else -> getString(R.string.add_transaction_amount_error)
-            })
+            }
+            tvAmountError.text = error.orEmpty()
+            tvAmountError.visibility = if (error == null) View.GONE else View.VISIBLE
+            ViewCompat.setStateDescription(tilAmount, error)
         }
         return isValid
     }
@@ -528,11 +592,6 @@ class AddTransactionFragment : Fragment() {
             )
         }
         return isValid
-    }
-
-    private fun setTextFieldError(layout: TextInputLayout, error: String?) {
-        layout.error = error
-        layout.isErrorEnabled = error != null
     }
 
     private fun validateCategory(showError: Boolean): Boolean {
@@ -575,7 +634,10 @@ class AddTransactionFragment : Fragment() {
 
         override fun afterTextChanged(s: Editable?) {
             if (isFormattingAmount) return
-            if (etAmount.hasFocus()) tilAmount.error = null
+            if (etAmount.hasFocus()) {
+                tvAmountError.visibility = View.GONE
+                ViewCompat.setStateDescription(tilAmount, null)
+            }
             val raw = s?.toString().orEmpty()
             val digits = raw.filter { it.isDigit() }.trimStart('0')
             val formatted = digits.toLongOrNull()?.let { amountFormat.format(it) }.orEmpty()
@@ -703,6 +765,7 @@ class AddTransactionFragment : Fragment() {
         private const val SAVE_PRESS_DOWN_DURATION_MS = 70L
         private const val SAVE_PRESS_UP_DURATION_MS = 140L
         private const val CATEGORY_SELECT_DURATION_MS = 160L
+        private const val REQUIRED_CARD_PULSE_DURATION_MS = 180L
         private const val MORE_CATEGORY = "Lainnya"
         private const val TYPE_EXPENSE = "expense"
         private const val TYPE_INCOME = "income"
