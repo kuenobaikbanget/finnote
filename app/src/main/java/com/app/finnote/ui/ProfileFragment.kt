@@ -35,7 +35,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         applyProfileInsets(view)
 
-        val user = DataStore.currentUser
+        val user = DataStore.getCurrentUser()
 
         view.findViewById<TextView>(R.id.tvProfileName).text = user.name
         view.findViewById<TextView>(R.id.tvProfileEmail).text = user.email

@@ -27,7 +27,7 @@ class TransactionSuccessFragment : Fragment() {
     private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID")).apply {
         maximumFractionDigits = 0
     }
-    private var transactionIndex: Int = -1
+    private var transactionId: Int = -1
     private var amountAnimationData: AmountAnimationData? = null
     private var stampAnimator: ValueAnimator? = null
     private var amountAnimator: ValueAnimator? = null
@@ -42,7 +42,7 @@ class TransactionSuccessFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        transactionIndex = arguments?.getInt(ARG_TRANSACTION_INDEX, -1) ?: -1
+        transactionId = arguments?.getInt(ARG_TRANSACTION_ID, -1) ?: -1
 
         applyInsets(view)
         bindSuccessState(view)
@@ -72,7 +72,7 @@ class TransactionSuccessFragment : Fragment() {
     }
 
     private fun bindSuccessState(view: View) {
-        val transaction = DataStore.transactions.getOrNull(transactionIndex)
+        val transaction = DataStore.getTransactionById(transactionId)
         if (transaction == null) {
             bindFallbackState(view)
             return
@@ -130,9 +130,9 @@ class TransactionSuccessFragment : Fragment() {
 
     private fun setupActions(view: View) {
         view.findViewById<MaterialButton>(R.id.btnViewTransactionDetail).setOnClickListener {
-            if (DataStore.transactions.getOrNull(transactionIndex) != null) {
+            if (DataStore.getTransactionById(transactionId) != null) {
                 parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, TransactionDetailFragment.newInstance(transactionIndex))
+                    .replace(R.id.fragmentContainer, TransactionDetailFragment.newInstance(transactionId))
                     .commit()
             } else {
                 parentFragmentManager.beginTransaction()
@@ -298,7 +298,7 @@ class TransactionSuccessFragment : Fragment() {
     )
 
     companion object {
-        private const val ARG_TRANSACTION_INDEX = "transaction_index"
+        private const val ARG_TRANSACTION_ID = "transaction_id"
         private const val TYPE_INCOME = "income"
         private const val STAMP_START_DELAY_MS = 180L
         private const val STAMP_ANIMATION_DURATION_MS = 560L
@@ -310,10 +310,10 @@ class TransactionSuccessFragment : Fragment() {
         private const val AMOUNT_COUNT_DURATION_MS = 520L
         private const val ACTIONS_REVEAL_DELAY_MS = 1080L
 
-        fun newInstance(index: Int): TransactionSuccessFragment {
+        fun newInstance(id: Int): TransactionSuccessFragment {
             return TransactionSuccessFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_TRANSACTION_INDEX, index)
+                    putInt(ARG_TRANSACTION_ID, id)
                 }
             }
         }

@@ -195,14 +195,11 @@ class AllTransactionsFragment : Fragment() {
         )
 
         itemView.setOnClickListener {
-            val actualIndex = DataStore.transactions.indexOf(transaction)
-            if (actualIndex >= 0) {
-                val detailFragment = TransactionDetailFragment.newInstance(actualIndex)
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, detailFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
+            val detailFragment = TransactionDetailFragment.newInstance(transaction.id)
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, detailFragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 

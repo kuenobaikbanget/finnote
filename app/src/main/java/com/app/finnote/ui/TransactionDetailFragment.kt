@@ -22,18 +22,18 @@ import java.util.Locale
 class TransactionDetailFragment : Fragment() {
 
     companion object {
-        private const val ARG_TRANSACTION_INDEX = "transaction_index"
+        private const val ARG_TRANSACTION_ID = "transaction_id"
 
-        fun newInstance(index: Int): TransactionDetailFragment {
+        fun newInstance(id: Int): TransactionDetailFragment {
             val fragment = TransactionDetailFragment()
             val args = Bundle()
-            args.putInt(ARG_TRANSACTION_INDEX, index)
+            args.putInt(ARG_TRANSACTION_ID, id)
             fragment.arguments = args
             return fragment
         }
     }
 
-    private var transactionIndex: Int = -1
+    private var transactionId: Int = -1
     private var transaction: Transaction? = null
 
     override fun onCreateView(
@@ -46,11 +46,11 @@ class TransactionDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        transactionIndex = arguments?.getInt(ARG_TRANSACTION_INDEX, -1) ?: -1
+        transactionId = arguments?.getInt(ARG_TRANSACTION_ID, -1) ?: -1
         applyTopBarInsets(view)
 
-        if (transactionIndex >= 0 && transactionIndex < DataStore.transactions.size) {
-            transaction = DataStore.transactions[transactionIndex]
+        transaction = DataStore.getTransactionById(transactionId)
+        if (transaction != null) {
             setupUI(view)
         } else {
             parentFragmentManager.popBackStack()

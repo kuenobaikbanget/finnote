@@ -102,16 +102,13 @@ class RecentTransactionsView @JvmOverloads constructor(
 
             // Handle click to show transaction detail
             itemView.setOnClickListener {
-                val actualIndex = DataStore.transactions.indexOf(transaction)
-                if (actualIndex >= 0) {
-                    fragmentManager?.let { fm ->
-                        currentFragment?.let { _ ->
-                            val detailFragment = TransactionDetailFragment.newInstance(actualIndex)
-                            fm.beginTransaction()
-                                .replace(R.id.fragmentContainer, detailFragment)
-                                .addToBackStack(null)
-                                .commit()
-                        }
+                fragmentManager?.let { fm ->
+                    currentFragment?.let { _ ->
+                        val detailFragment = TransactionDetailFragment.newInstance(transaction.id)
+                        fm.beginTransaction()
+                            .replace(R.id.fragmentContainer, detailFragment)
+                            .addToBackStack(null)
+                            .commit()
                     }
                 }
             }

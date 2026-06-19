@@ -463,12 +463,11 @@ class AddTransactionFragment : Fragment() {
             category = category!!,
             description = etDescription.text.toString().trim()
         )
-        DataStore.addTransaction(transaction)
-        val savedTransactionIndex = DataStore.transactions.lastIndex
+        val newId = DataStore.addTransaction(transaction).toInt()
 
         isDirty = false
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, TransactionSuccessFragment.newInstance(savedTransactionIndex))
+            .replace(R.id.fragmentContainer, TransactionSuccessFragment.newInstance(newId))
             .commit()
     }
 

@@ -58,7 +58,7 @@ class HomeFragment : Fragment() {
             (requireActivity() as? MainActivity)?.openProfile()
         }
         layoutNotification.setOnClickListener {
-            val count = DataStore.notificationCount
+            val count = DataStore.getNotificationCount()
             val message = if (count <= 0) {
                 getString(R.string.home_notification_empty)
             } else {
@@ -73,10 +73,10 @@ class HomeFragment : Fragment() {
                 .commit()
         }
 
-        val user = DataStore.currentUser
+        val user = DataStore.getCurrentUser()
         val firstName = user.name.split(" ")[0]
         tvWelcome.text = getString(R.string.welcome_user, firstName)
-        bindNotificationBadge(tvNotificationBadge, DataStore.notificationCount)
+        bindNotificationBadge(tvNotificationBadge, DataStore.getNotificationCount())
 
         bindHomeData(view)
     }

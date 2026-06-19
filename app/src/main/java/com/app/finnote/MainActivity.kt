@@ -10,6 +10,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import com.app.finnote.data.DataStore
 import com.app.finnote.ui.HomeFragment
 import com.app.finnote.ui.ProfileFragment
 import com.app.finnote.ui.TransactionFragment
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightStatusBars = true
             isAppearanceLightNavigationBars = true
         }
+        DataStore.init(this)
         setContentView(R.layout.activity_main)
 
         val bottomNav = findViewById<View>(R.id.customBottomNav)
