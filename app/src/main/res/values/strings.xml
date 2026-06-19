@@ -30,11 +30,15 @@
     <string name="budget_used_label">Terpakai %1$s</string>
     <string name="budget_limit_label">Limit %1$s</string>
     <string name="budget_edit_action">Edit</string>
-    <string name="budget_edit_title">Edit Batas Bulanan</string>
+    <string name="budget_edit_title">Ubah Batas Bulanan</string>
     <string name="budget_edit_hint">Batas pengeluaran</string>
+    <string name="budget_edit_zero_hint">0</string>
+    <string name="budget_edit_message">Pakai angka yang terasa aman untuk pengeluaran bulan ini.</string>
+    <string name="budget_edit_helper">Batas ini hanya untuk bulan berjalan dan bisa diubah kapan saja.</string>
     <string name="budget_edit_save">Simpan</string>
     <string name="budget_edit_cancel">Batal</string>
     <string name="budget_edit_empty_error">Masukkan batas bulanan dulu.</string>
+    <string name="budget_edit_too_large_error">Nominal terlalu besar. Periksa lagi angkanya.</string>
     <string name="budget_edit_success">Batas bulan ini diperbarui.</string>
     <string name="budget_status_safe">Aman</string>
     <string name="budget_status_caution">Mulai hemat</string>

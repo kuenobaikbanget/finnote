@@ -3,11 +3,11 @@ package com.app.finnote.ui
 import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.PathInterpolator
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -283,33 +283,110 @@ class HomeFragment : Fragment() {
     }
 
     private fun showEditBudgetLimitDialog(monthKey: String, currentLimit: Int) {
-        val input = EditText(requireContext()).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER
-            hint = getString(R.string.budget_edit_hint)
-            setText(currentLimit.toString())
-            selectAll()
-            setSingleLine(true)
-            setPadding(24.dpToPx(), 0, 24.dpToPx(), 0)
-        }
+        val dialogView = layoutInflater.inflate(R.layout.dialog_budget_limit, null)
+        val input = dialogView.findViewById<EditText>(R.id.etBudgetLimit)
+        val errorText = dialogView.findViewById<TextView>(R.id.tvBudgetLimitError)
+        val currentLimitText = if (currentLimit > 0) currentLimit.toString() else ""
+
+        input.setText(currentLimitText)
+        input.setSelection(input.text?.length ?: 0)
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.budget_edit_title)
-            .setView(input)
+            .setView(dialogView)
             .setNegativeButton(R.string.budget_edit_cancel, null)
             .setPositiveButton(R.string.budget_edit_save, null)
             .show()
 
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val limit = input.text.toString().toIntOrNull()
-            if (limit == null || limit <= 0) {
-                input.error = getString(R.string.budget_edit_empty_error)
-                return@setOnClickListener
+        dialog.window?.setBackgroundDrawable(
+            ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_budget_limit)
+        )
+
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.apply {
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.action_green_accessible))
+            textSize = 14f
+            isAllCaps = false
+            setPadding(24, 12, 24, 12)
+        }
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)?.apply {
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.deep_teal))
+            textSize = 14f
+            isAllCaps = false
+            background = null
+            setPadding(24, 12, 24, 12)
+        }
+
+        fun showError(message: String) {
+            val wasVisible = errorText.visibility == View.VISIBLE
+            errorText.text = message
+            if (!wasVisible) {
+                errorText.visibility = View.VISIBLE
+                errorText.alpha = 0f
+                errorText.animate()
+                    .alpha(1f)
+                    .setDuration(180L)
+                    .setInterpolator(PathInterpolator(0.22f, 1f, 0.36f, 1f))
+                    .start()
+            }
+            input.requestFocus()
+        }
+
+        fun clearError() {
+            if (errorText.visibility == View.VISIBLE) {
+                errorText.animate()
+                    .alpha(0f)
+                    .setDuration(140L)
+                    .setInterpolator(PathInterpolator(0.22f, 1f, 0.36f, 1f))
+                    .withEndAction {
+                        errorText.visibility = View.GONE
+                    }
+                    .start()
+            }
+        }
+
+        fun saveLimit() {
+            val limit = input.text.toString().trim().toLongOrNull()
+            when {
+                limit == null || limit <= 0L -> {
+                    showError(getString(R.string.budget_edit_empty_error))
+                    return
+                }
+                limit > Int.MAX_VALUE -> {
+                    showError(getString(R.string.budget_edit_too_large_error))
+                    return
+                }
             }
 
-            DataStore.setMonthlyLimit(monthKey, limit)
+            clearError()
+            DataStore.setMonthlyLimit(monthKey, limit.toInt())
             Toast.makeText(requireContext(), R.string.budget_edit_success, Toast.LENGTH_SHORT).show()
             view?.let { bindHomeData(it) }
             dialog.dismiss()
+        }
+
+        input.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                input.selectAll()
+                clearError()
+            }
+        }
+        input.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                saveLimit()
+                true
+            } else {
+                false
+            }
+        }
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            saveLimit()
+        }
+        input.post {
+            input.requestFocus()
+            val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE)
+                as? android.view.inputmethod.InputMethodManager
+            imm?.showSoftInput(input, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
         }
     }
 

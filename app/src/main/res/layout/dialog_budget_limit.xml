@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvBudgetLimitDialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter"
+        android:lineSpacingExtra="2dp"
+        android:text="@string/budget_edit_message"
+        android:textColor="@color/text_muted_accessible"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/layoutBudgetLimitInput"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_budget_limit_dialog_input"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text="@string/add_transaction_amount_prefix"
+            android:contentDescription="@string/add_transaction_amount_prefix"
+            android:textColor="@color/deep_teal"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/etBudgetLimit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:autofillHints="none"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center_vertical"
+            android:hint="@string/budget_edit_zero_hint"
+            android:imeOptions="actionDone"
+            android:includeFontPadding="false"
+            android:inputType="number"
+            android:maxLines="1"
+            android:padding="0dp"
+            android:selectAllOnFocus="true"
+            android:textColor="@color/black"
+            android:textColorHint="@color/text_muted_accessible"
+            android:textSize="22sp"
+            tools:text="750000" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvBudgetLimitError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:accessibilityLiveRegion="polite"
+        android:alpha="0"
+        android:fontFamily="@font/inter"
+        android:textColor="@color/expense_coral_accessible"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="Masukkan batas bulanan dulu." />
+
+    <TextView
+        android:id="@+id/tvBudgetLimitHelper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/inter"
+        android:lineSpacingExtra="2dp"
+        android:text="@string/budget_edit_helper"
+        android:textColor="@color/text_muted_accessible"
+        android:textSize="12sp" />
+</LinearLayout>
