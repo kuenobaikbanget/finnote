@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,7 +8,7 @@
     android:paddingStart="24dp"
     android:paddingTop="4dp"
     android:paddingEnd="24dp"
-    android:paddingBottom="8dp">
+    android:paddingBottom="4dp">
 
     <TextView
         android:id="@+id/tvBudgetLimitDialogMessage"
@@ -47,6 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
+            android:layout_weight="1"
             android:autofillHints="none"
             android:background="@android:color/transparent"
             android:fontFamily="@font/inter_bold"
@@ -62,6 +64,18 @@
             android:textColorHint="@color/text_muted_accessible"
             android:textSize="22sp"
             tools:text="750000" />
+
+        <ImageView
+            android:id="@+id/ivBudgetLimitCheck"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            android:scaleType="center"
+            android:src="@drawable/ic_check"
+            android:tint="@color/action_green_accessible"
+            android:visibility="gone"
+            tools:visibility="visible" />
     </LinearLayout>
 
     <TextView
@@ -87,4 +101,35 @@
         android:text="@string/budget_edit_helper"
         android:textColor="@color/text_muted_accessible"
         android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBudgetCancel"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/budget_edit_cancel"
+            android:textColor="@color/deep_teal"
+            android:textSize="14sp"
+            app:cornerRadius="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBudgetSave"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:text="@string/budget_edit_save"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:backgroundTint="@color/action_green_accessible"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
 </LinearLayout>

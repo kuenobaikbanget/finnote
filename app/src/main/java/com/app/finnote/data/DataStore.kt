@@ -19,36 +19,86 @@ object DataStore {
 
     // ── User ──────────────────────────────────────────────
 
-    fun getCurrentUser(): User {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery("SELECT email, name, joined_date FROM users LIMIT 1", null)
-        return cursor.use {
-            if (it.moveToFirst()) {
-                User(
-                    email = it.getString(it.getColumnIndexOrThrow("email")),
-                    name = it.getString(it.getColumnIndexOrThrow("name")),
-                    joinedDate = it.getString(it.getColumnIndexOrThrow("joined_date"))
-                )
-            } else {
-                User(name = "", email = "", joinedDate = "")
+    fun isLoggedIn(): Boolean {
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT value FROM preferences WHERE key = 'session_active'",
+                null
+            )
+            cursor.use {
+                it.moveToFirst() && it.getString(it.getColumnIndexOrThrow("value")) == "1"
             }
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun setLoggedIn(email: String) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("key", "session_active")
+            put("value", "1")
+        }
+        db.insertWithOnConflict("preferences", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE)
+        val emailValues = ContentValues().apply {
+            put("key", "session_email")
+            put("value", email)
+        }
+        db.insertWithOnConflict("preferences", null, emailValues, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    fun loginUser(email: String, password: String): Boolean {
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT email FROM users WHERE email = ? AND password = ?",
+                arrayOf(email.trim(), password)
+            )
+            cursor.use { it.moveToFirst() }
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun getCurrentUser(): User {
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery("SELECT email, name, joined_date FROM users LIMIT 1", null)
+            cursor.use {
+                if (it.moveToFirst()) {
+                    User(
+                        email = it.getString(it.getColumnIndexOrThrow("email")),
+                        name = it.getString(it.getColumnIndexOrThrow("name")),
+                        joinedDate = it.getString(it.getColumnIndexOrThrow("joined_date"))
+                    )
+                } else {
+                    User(name = "", email = "", joinedDate = "")
+                }
+            }
+        } catch (_: Exception) {
+            User(name = "", email = "", joinedDate = "")
         }
     }
 
     // ── Notification ──────────────────────────────────────
 
     fun getNotificationCount(): Int {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT value FROM preferences WHERE key = 'notification_count'",
-            null
-        )
-        return cursor.use {
-            if (it.moveToFirst()) {
-                it.getString(it.getColumnIndexOrThrow("value")).toIntOrNull() ?: 0
-            } else {
-                0
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT value FROM preferences WHERE key = 'notification_count'",
+                null
+            )
+            cursor.use {
+                if (it.moveToFirst()) {
+                    it.getString(it.getColumnIndexOrThrow("value")).toIntOrNull() ?: 0
+                } else {
+                    0
+                }
             }
+        } catch (_: Exception) {
+            0
         }
     }
 
@@ -64,17 +114,21 @@ object DataStore {
     // ── Transactions ──────────────────────────────────────
 
     fun getAll(): List<Transaction> {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT * FROM transactions ORDER BY date ASC",
-            null
-        )
-        return cursor.use {
-            val list = mutableListOf<Transaction>()
-            while (it.moveToNext()) {
-                list.add(Transaction.fromCursor(it))
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT * FROM transactions ORDER BY date ASC",
+                null
+            )
+            cursor.use {
+                val list = mutableListOf<Transaction>()
+                while (it.moveToNext()) {
+                    list.add(Transaction.fromCursor(it))
+                }
+                list
             }
-            list
+        } catch (_: Exception) {
+            emptyList()
         }
     }
 
@@ -92,34 +146,42 @@ object DataStore {
     }
 
     fun getTransactionById(id: Int): Transaction? {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT * FROM transactions WHERE id = ?",
-            arrayOf(id.toString())
-        )
-        return cursor.use {
-            if (it.moveToFirst()) {
-                Transaction.fromCursor(it)
-            } else {
-                null
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT * FROM transactions WHERE id = ?",
+                arrayOf(id.toString())
+            )
+            cursor.use {
+                if (it.moveToFirst()) {
+                    Transaction.fromCursor(it)
+                } else {
+                    null
+                }
             }
+        } catch (_: Exception) {
+            null
         }
     }
 
     // ── Monthly Budgets ───────────────────────────────────
 
     fun getMonthlyLimit(monthKey: String): Int {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT limit_amount FROM monthly_budgets WHERE month_key = ?",
-            arrayOf(monthKey)
-        )
-        return cursor.use {
-            if (it.moveToFirst()) {
-                it.getInt(it.getColumnIndexOrThrow("limit_amount"))
-            } else {
-                DEFAULT_MONTHLY_LIMIT
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT limit_amount FROM monthly_budgets WHERE month_key = ?",
+                arrayOf(monthKey)
+            )
+            cursor.use {
+                if (it.moveToFirst()) {
+                    it.getInt(it.getColumnIndexOrThrow("limit_amount"))
+                } else {
+                    DEFAULT_MONTHLY_LIMIT
+                }
             }
+        } catch (_: Exception) {
+            DEFAULT_MONTHLY_LIMIT
         }
     }
 
@@ -135,26 +197,34 @@ object DataStore {
     // ── Monthly Summaries ─────────────────────────────────
 
     fun getExpenseByMonth(monthKey: String): Int {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'expense' AND date LIKE ?",
-            arrayOf("$monthKey%")
-        )
-        return cursor.use {
-            it.moveToFirst()
-            it.getInt(0)
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'expense' AND date LIKE ?",
+                arrayOf("$monthKey%")
+            )
+            cursor.use {
+                it.moveToFirst()
+                it.getInt(0)
+            }
+        } catch (_: Exception) {
+            0
         }
     }
 
     fun getIncomeByMonth(monthKey: String): Int {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'income' AND date LIKE ?",
-            arrayOf("$monthKey%")
-        )
-        return cursor.use {
-            it.moveToFirst()
-            it.getInt(0)
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE type = 'income' AND date LIKE ?",
+                arrayOf("$monthKey%")
+            )
+            cursor.use {
+                it.moveToFirst()
+                it.getInt(0)
+            }
+        } catch (_: Exception) {
+            0
         }
     }
 

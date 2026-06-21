@@ -2,6 +2,21 @@
     <!-- App-Level Strings -->
     <string name="app_name">FinNote</string>
 
+    <!-- Login Strings -->
+    <string name="splash_tagline">Kelola keuanganmu dengan tenang</string>
+    <string name="login_tagline">Catatan keuangan yang tenang</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_email_hint">nama@email.com</string>
+    <string name="login_password_label">Kata sandi</string>
+    <string name="login_password_hint">Masukkan kata sandi</string>
+    <string name="login_button">Masuk</string>
+    <string name="login_register">Daftar</string>
+    <string name="login_forgot_password">Lupa kata sandi?</string>
+    <string name="login_error_empty_email">Masukkan email dulu.</string>
+    <string name="login_error_empty_password">Masukkan kata sandi dulu.</string>
+    <string name="login_error_invalid">Email atau kata sandi salah.</string>
+    <string name="login_todo_message">Segera hadir</string>
+
     <!-- Navigation Strings -->
     <string name="nav_home">Home</string>
     <string name="nav_transaction">Transaksi</string>

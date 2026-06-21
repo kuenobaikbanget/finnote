@@ -476,7 +476,7 @@
                         android:layout_height="44dp"
                         android:importantForAccessibility="no"
                         android:padding="10dp"
-                        android:src="@drawable/ic_calender"
+                        android:src="@drawable/ic_calendar"
                         app:tint="@color/deep_teal" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

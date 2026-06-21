@@ -286,36 +286,19 @@ class HomeFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_budget_limit, null)
         val input = dialogView.findViewById<EditText>(R.id.etBudgetLimit)
         val errorText = dialogView.findViewById<TextView>(R.id.tvBudgetLimitError)
-        val currentLimitText = if (currentLimit > 0) currentLimit.toString() else ""
+        val checkIcon = dialogView.findViewById<ImageView>(R.id.ivBudgetLimitCheck)
+        val btnCancel = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnBudgetCancel)
+        val btnSave = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnBudgetSave)
 
+        fun rawValue(): String = (input.text?.toString() ?: "").filter { it.isDigit() }
+
+        fun formatWithDots(raw: String): String =
+            if (raw.isEmpty()) "" else raw.reversed().chunked(3).joinToString(".").reversed()
+
+        // Pre-populate with formatted value
+        val currentLimitText = if (currentLimit > 0) formatWithDots(currentLimit.toString()) else ""
         input.setText(currentLimitText)
         input.setSelection(input.text?.length ?: 0)
-
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.budget_edit_title)
-            .setView(dialogView)
-            .setNegativeButton(R.string.budget_edit_cancel, null)
-            .setPositiveButton(R.string.budget_edit_save, null)
-            .show()
-
-        dialog.window?.setBackgroundDrawable(
-            ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_budget_limit)
-        )
-
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.apply {
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.action_green_accessible))
-            textSize = 14f
-            isAllCaps = false
-            setPadding(24, 12, 24, 12)
-        }
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)?.apply {
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.deep_teal))
-            textSize = 14f
-            isAllCaps = false
-            background = null
-            setPadding(24, 12, 24, 12)
-        }
 
         fun showError(message: String) {
             val wasVisible = errorText.visibility == View.VISIBLE
@@ -345,8 +328,74 @@ class HomeFragment : Fragment() {
             }
         }
 
+        fun updateCheckIcon() {
+            val value = rawValue().toLongOrNull()
+            val showCheck = value != null && value > 0L && value <= Int.MAX_VALUE
+            if (showCheck && checkIcon?.visibility != View.VISIBLE) {
+                checkIcon?.apply {
+                    visibility = View.VISIBLE
+                    alpha = 0f
+                    animate()
+                        .alpha(1f)
+                        .setDuration(200L)
+                        .setInterpolator(PathInterpolator(0.22f, 1f, 0.36f, 1f))
+                        .start()
+                }
+            } else if (!showCheck && checkIcon?.visibility == View.VISIBLE) {
+                checkIcon?.visibility = View.GONE
+            }
+        }
+
+        // TextWatcher: thousand-separator dots + check icon + clear error
+        input.addTextChangedListener(object : android.text.TextWatcher {
+            private var isFormatting = false
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!isFormatting) clearError()
+            }
+
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (isFormatting) return
+                isFormatting = true
+
+                val raw = (s?.toString() ?: "").filter { it.isDigit() }
+                val formatted = formatWithDots(raw)
+
+                if (formatted != s.toString()) {
+                    val oldCursor = input.selectionEnd.coerceAtMost(s?.length ?: 0)
+                    val digitsBeforeCursor = (s?.toString()?.substring(0, oldCursor) ?: "").count { it.isDigit() }
+
+                    input.setText(formatted)
+
+                    var newCursor = 0
+                    var digitsSeen = 0
+                    for (ch in formatted) {
+                        if (digitsSeen >= digitsBeforeCursor) break
+                        if (ch.isDigit()) digitsSeen++
+                        newCursor++
+                    }
+                    input.setSelection(newCursor.coerceIn(0, formatted.length))
+                }
+
+                isFormatting = false
+                updateCheckIcon()
+            }
+        })
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.budget_edit_title)
+            .setView(dialogView)
+            .show()
+
+        dialog.window?.setBackgroundDrawable(
+            ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_budget_limit)
+        )
+
         fun saveLimit() {
-            val limit = input.text.toString().trim().toLongOrNull()
+            val raw = rawValue()
+            val limit = raw.toLongOrNull()
             when {
                 limit == null || limit <= 0L -> {
                     showError(getString(R.string.budget_edit_empty_error))
@@ -365,10 +414,14 @@ class HomeFragment : Fragment() {
             dialog.dismiss()
         }
 
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        btnSave.setOnClickListener { saveLimit() }
+
         input.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 input.selectAll()
                 clearError()
+                updateCheckIcon()
             }
         }
         input.setOnEditorActionListener { _, actionId, _ ->
@@ -378,9 +431,6 @@ class HomeFragment : Fragment() {
             } else {
                 false
             }
-        }
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            saveLimit()
         }
         input.post {
             input.requestFocus()

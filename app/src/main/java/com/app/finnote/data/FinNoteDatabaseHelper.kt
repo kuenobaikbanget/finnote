@@ -29,11 +29,14 @@ class FinNoteDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     private fun seedData(db: SQLiteDatabase) {
-        // Seed user
-        db.execSQL(
-            "INSERT INTO users (email, name, joined_date) VALUES (?, ?, ?)",
-            arrayOf("rizky@gmail.com", "Rizky", "21 Januari 2024")
-        )
+        // Seed user — pakai insert() biar gak throw exception
+        val userValues = ContentValues().apply {
+            put("email", "rizky@gmail.com")
+            put("name", "Rizky")
+            put("password", "test")
+            put("joined_date", "21 Januari 2024")
+        }
+        db.insertWithOnConflict("users", null, userValues, SQLiteDatabase.CONFLICT_IGNORE)
 
         // Seed transactions
         val transactions = listOf(
@@ -117,12 +120,12 @@ class FinNoteDatabaseHelper(context: Context) : SQLiteOpenHelper(
             put("key", "notification_count")
             put("value", "0")
         }
-        db.insert("preferences", null, prefValues)
+        db.insertWithOnConflict("preferences", null, prefValues, SQLiteDatabase.CONFLICT_IGNORE)
     }
 
     companion object {
         private const val DATABASE_NAME = "finnote.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         private const val CREATE_TABLE_TRANSACTIONS = """
             CREATE TABLE transactions (
@@ -140,6 +143,7 @@ class FinNoteDatabaseHelper(context: Context) : SQLiteOpenHelper(
             CREATE TABLE users (
                 email       TEXT PRIMARY KEY,
                 name        TEXT NOT NULL,
+                password    TEXT NOT NULL,
                 joined_date TEXT NOT NULL
             )
         """
