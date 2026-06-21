@@ -38,315 +38,227 @@
         android:layout_marginTop="20dp"
         android:clipToPadding="false"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnLogout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitlePage">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="24dp">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/profileCard"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp"
-            app:contentPadding="22dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/divider_mist"
-            app:strokeWidth="1dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/avatarContainer"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardCornerRadius="40dp"
-                    app:cardElevation="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:strokeColor="@color/deep_teal"
-                    app:strokeWidth="1dp">
-
-                    <ImageView
-                        android:id="@+id/ivProfile"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/profile_photo_desc"
-                        android:scaleType="centerCrop"
-                        android:src="@mipmap/ic_photo_profile_round" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:id="@+id/tvProfileName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/tvProfileEmail"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/avatarContainer"
-                    app:layout_constraintTop_toTopOf="@id/avatarContainer"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    tools:text="Rizky Pratama" />
-
-                <TextView
-                    android:id="@+id/tvProfileEmail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="4dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/grey"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/avatarContainer"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/avatarContainer"
-                    app:layout_constraintTop_toBottomOf="@id/tvProfileName"
-                    tools:text="rizky@gmail.com" />
-
-                <TextView
-                    android:id="@+id/tvProfileJoined"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:background="@drawable/bg_profile_joined_pill"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:paddingStart="12dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="12dp"
-                    android:paddingBottom="8dp"
-                    android:textColor="@color/deep_teal"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/avatarContainer"
-                    tools:text="Bergabung sejak 21 Januari 2024" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/monthlyPulseCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp"
-            app:contentPadding="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/statsCard"
-            app:strokeColor="@color/divider_mist"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/profileCard"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardMaxElevation="0dp"
+                app:contentPadding="22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="@color/divider_mist"
+                app:strokeWidth="1dp">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/avatarContainer"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:cardCornerRadius="40dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:strokeColor="@color/deep_teal"
+                        app:strokeWidth="1dp">
 
-                        <TextView
-                            android:id="@+id/tvProfileMonthlyTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/profile_monthly_pulse_title"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvProfileMonth"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="@color/deep_teal"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            tools:text="Juni 2026" />
-                    </LinearLayout>
+                        <ImageView
+                            android:id="@+id/ivProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@string/profile_photo_desc"
+                            android:scaleType="centerCrop"
+                            android:src="@mipmap/ic_photo_profile_round" />
+                    </com.google.android.material.card.MaterialCardView>
 
                     <TextView
-                        android:id="@+id/tvProfileBudgetStatus"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvProfileName"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:background="@drawable/bg_budget_status_pill"
-                        android:gravity="center"
-                        android:minHeight="32dp"
+                        android:layout_marginStart="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/tvProfileEmail"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/avatarContainer"
+                        app:layout_constraintTop_toTopOf="@id/avatarContainer"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        tools:text="Rizky Pratama" />
+
+                    <TextView
+                        android:id="@+id/tvProfileEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="4dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/grey"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@id/avatarContainer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/avatarContainer"
+                        app:layout_constraintTop_toBottomOf="@id/tvProfileName"
+                        tools:text="rizky@gmail.com" />
+
+                    <TextView
+                        android:id="@+id/tvProfileJoined"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:background="@drawable/bg_profile_joined_pill"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:paddingStart="12dp"
+                        android:paddingTop="8dp"
                         android:paddingEnd="12dp"
+                        android:paddingBottom="8dp"
                         android:textColor="@color/deep_teal"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        tools:text="Aman" />
-                </LinearLayout>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/avatarContainer"
+                        tools:text="Bergabung sejak 21 Januari 2024" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvProfileBudgetMain"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textColor="@color/black"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    tools:text="Tersisa Rp4.050.000" />
-
-                <TextView
-                    android:id="@+id/tvProfileBudgetCaption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/deep_teal"
-                    android:textSize="12sp"
-                    tools:text="Terpakai Rp950.000 dari limit Rp5.000.000" />
-
-                <ProgressBar
-                    android:id="@+id/progressProfileBudget"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="14dp"
-                    android:layout_marginTop="14dp"
-                    android:max="1000"
-                    android:progress="190"
-                    android:progressDrawable="@drawable/bg_budget_progress_safe" />
-
-                <TextView
-                    android:id="@+id/tvProfileMonthlyEmpty"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/profile_monthly_activity_empty"
-                    android:textColor="@color/grey"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/statsCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp"
-            app:contentPadding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileCard"
-            app:strokeColor="@color/divider_mist"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/statsCard"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_account_stats_title"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/all_transactions_title"
-                        android:textColor="@color/grey"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvTransactionCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:textColor="@color/deep_teal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:text="35 transaksi" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider_mist" />
+                android:layout_marginTop="14dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardMaxElevation="0dp"
+                app:contentPadding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profileCard"
+                app:strokeColor="@color/divider_mist"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="10dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/profile_top_category_label"
-                        android:textColor="@color/grey"
-                        android:textSize="14sp" />
+                        android:text="@string/profile_account_stats_title"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tvProfileTopCategory"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="@color/deep_teal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:text="Tagihan" />
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/all_transactions_title"
+                            android:textColor="@color/grey"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvTransactionCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:textColor="@color/deep_teal"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="35 transaksi" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider_mist" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/profile_top_category_label"
+                            android:textColor="@color/grey"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvProfileTopCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/deep_teal"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="Tagihan" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/btnLogout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_logout_ripple"
+        android:clickable="true"
+        android:contentDescription="@string/profile_logout_button"
+        android:focusable="true"
+        android:gravity="center"
+        android:minHeight="52dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:text="@string/profile_logout_button"
+        android:textColor="@color/pale_red"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

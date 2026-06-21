@@ -34,6 +34,15 @@ object DataStore {
         }
     }
 
+    fun logout() {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("key", "session_active")
+            put("value", "0")
+        }
+        db.insertWithOnConflict("preferences", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
     fun setLoggedIn(email: String) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {

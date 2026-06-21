@@ -139,6 +139,11 @@
     <string name="profile_top_category_empty">Belum ada</string>
     <string name="profile_transaction_count_format">%1$d transaksi</string>
     <string name="profile_budget_usage_desc">%1$s, %2$s dari limit %3$s. Terpakai sekitar %4$d persen.</string>
+    <string name="profile_logout_button">Keluar</string>
+    <string name="profile_logout_dialog_title">Keluar dari akun?</string>
+    <string name="profile_logout_dialog_message">Kamu perlu masuk lagi untuk mengakses FinNote.</string>
+    <string name="profile_logout_confirm">Keluar</string>
+    <string name="profile_logout_cancel">Batal</string>
 
     <!-- Transaction Details Strings -->
     <string name="transaction_detail_title">Detail Transaksi</string>
