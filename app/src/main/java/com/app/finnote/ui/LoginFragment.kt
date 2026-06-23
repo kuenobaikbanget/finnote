@@ -92,7 +92,16 @@ class LoginFragment : Fragment() {
         }
 
         tvForgotPassword.setOnClickListener {
-            android.widget.Toast.makeText(requireContext(), getString(R.string.login_todo_message), android.widget.Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left,
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right
+                )
+                .replace(R.id.authFragmentContainer, ForgotPasswordFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.loginScroll)) { v, insets ->

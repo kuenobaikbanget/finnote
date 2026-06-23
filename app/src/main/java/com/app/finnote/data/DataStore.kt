@@ -107,6 +107,19 @@ object DataStore {
         }
     }
 
+    fun isEmailExists(email: String): Boolean {
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT email FROM users WHERE email = ?",
+                arrayOf(email.trim())
+            )
+            cursor.use { it.moveToFirst() }
+        } catch (_: Exception) {
+            false
+        }
+    }
+
     fun getCurrentUser(): User {
         return try {
             val db = dbHelper.readableDatabase
