@@ -78,6 +78,11 @@ class LoginFragment : Fragment() {
 
         btnLogin.setOnClickListener { attemptLogin() }
 
+        view.findViewById<View>(R.id.btnGuest).setOnClickListener {
+            DataStore.logout()
+            navigateToMain()
+        }
+
         tvRegister.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -155,15 +160,6 @@ class LoginFragment : Fragment() {
     private fun setLoading(loading: Boolean) {
         isLoading = loading
         btnLogin.isEnabled = !loading
-        if (loading) {
-            btnLogin.text = ""
-            btnLogin.setIconResource(android.R.drawable.ic_popup_sync)
-            btnLogin.iconGravity = android.view.Gravity.CENTER
-            btnLogin.iconSize = 28
-        } else {
-            btnLogin.text = getString(R.string.login_button)
-            btnLogin.icon = null
-        }
     }
 
     private fun showError(message: String) {
