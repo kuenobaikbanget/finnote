@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -76,7 +77,10 @@ class TransactionDetailFragment : Fragment() {
         tvAmount.text = currencyFormatter.format(transaction.amount)
 
         val ivIcon = view.findViewById<ImageView>(R.id.ivIcon)
-        val typeColor = if (isIncome) "#2f6f44".toColorInt() else "#ff6b6c".toColorInt()
+        val typeColor = ContextCompat.getColor(
+            requireContext(),
+            if (isIncome) R.color.chart_income_green else R.color.expense_coral_accessible
+        )
         ivIcon.rotation = if (isIncome) 0f else 180f
         ivIcon.setColorFilter(typeColor)
 
@@ -97,7 +101,7 @@ class TransactionDetailFragment : Fragment() {
         if (transaction.category.isNotBlank()) {
             tvCategory.text = transaction.category
             tvCategory.backgroundTintList = ColorStateList.valueOf(typeColor)
-            tvCategory.setTextColor("#f6fcf9".toColorInt())
+            tvCategory.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             tvCategory.visibility = View.VISIBLE
             tvCategoryDetail.text = transaction.category
             tvCategoryDetail.setTextColor(typeColor)
@@ -105,7 +109,7 @@ class TransactionDetailFragment : Fragment() {
             tvCategory.backgroundTintList = null
             tvCategory.visibility = View.GONE
             tvCategoryDetail.text = "-"
-            tvCategoryDetail.setTextColor("#0d1f2d".toColorInt())
+            tvCategoryDetail.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         }
 
         // Detail rows

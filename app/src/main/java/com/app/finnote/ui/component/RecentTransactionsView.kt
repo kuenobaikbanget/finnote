@@ -83,7 +83,7 @@ class RecentTransactionsView @JvmOverloads constructor(
             tvAmount.text = formatAmount(transaction)
 
             val isIncome = transaction.type == "income"
-            val colorRes = if (isIncome) R.color.green else R.color.pale_red
+            val colorRes = if (isIncome) R.color.chart_income_green else R.color.expense_coral_accessible
             val typeLabel = context.getString(if (isIncome) R.string.home_income_label else R.string.home_expense_label)
             val color = ContextCompat.getColor(context, colorRes)
 

@@ -176,7 +176,7 @@ class AllTransactionsFragment : Fragment() {
         val sign = if (isIncome) "+" else "-"
         tvAmount.text = getString(R.string.transaction_amount_format, sign, currencyFormatter.format(transaction.amount))
 
-        val colorRes = if (isIncome) R.color.green else R.color.pale_red
+        val colorRes = if (isIncome) R.color.chart_income_green else R.color.expense_coral_accessible
         val typeLabel = getString(if (isIncome) R.string.home_income_label else R.string.home_expense_label)
         val amountText = tvAmount.text.toString()
         val color = ContextCompat.getColor(requireContext(), colorRes)

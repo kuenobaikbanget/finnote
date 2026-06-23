@@ -2,6 +2,7 @@ package com.app.finnote
 
 import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -59,7 +60,11 @@ class SplashActivity : AppCompatActivity() {
         scheduleLoadingDots(pbLoading)
 
         lifecycleScope.launch {
-            delay(MIN_DISPLAY_MS)
+            if (shouldReduceMotion()) {
+                delay(400L)
+            } else {
+                delay(MIN_DISPLAY_MS)
+            }
             navigate()
         }
     }
@@ -97,6 +102,18 @@ class SplashActivity : AppCompatActivity() {
                 view.animate().alpha(1f).setDuration(200L).start()
             }
         }, LOADING_DOTS_DELAY)
+    }
+
+    private fun shouldReduceMotion(): Boolean {
+        return try {
+            Settings.Global.getFloat(
+                contentResolver,
+                Settings.Global.ANIMATOR_DURATION_SCALE,
+                1f
+            ) == 0f
+        } catch (_: Exception) {
+            false
+        }
     }
 
     private fun navigate() {
