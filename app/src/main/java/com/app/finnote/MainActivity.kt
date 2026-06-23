@@ -74,6 +74,10 @@ class MainActivity : AppCompatActivity() {
         showTab(ProfileFragment())
     }
 
+    fun openHome() {
+        showTab(HomeFragment())
+    }
+
     private fun updateNavSelection(currentFragment: Fragment) {
         btnNavHome.isSelected = currentFragment is HomeFragment
         btnNavTransaction.isSelected = currentFragment is TransactionFragment

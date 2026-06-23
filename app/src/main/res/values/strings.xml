@@ -17,6 +17,33 @@
     <string name="login_error_invalid">Email atau kata sandi salah.</string>
     <string name="login_todo_message">Segera hadir</string>
 
+    <!-- Register Strings -->
+    <string name="register_title">Daftar Akun</string>
+    <string name="register_tagline">Mulai langkah mencatat keuanganmu dengan tenang.</string>
+    <string name="register_name_hint">Nama lengkap</string>
+    <string name="register_email_hint">Alamat email</string>
+    <string name="register_password_hint">Kata sandi baru</string>
+    <string name="register_password_confirm_hint">Konfirmasi kata sandi</string>
+    <string name="register_button">Daftar</string>
+    <string name="register_login_prompt">Sudah punya akun? Masuk</string>
+    <string name="register_error_empty_name">Masukkan nama dulu.</string>
+    <string name="register_error_empty_email">Masukkan email dulu.</string>
+    <string name="register_error_empty_password">Masukkan kata sandi dulu.</string>
+    <string name="register_error_empty_confirm_password">Konfirmasi kata sandi dulu.</string>
+    <string name="register_error_password_mismatch">Konfirmasi kata sandi tidak cocok.</string>
+    <string name="register_error_duplicate_email">Email sudah terdaftar.</string>
+    <string name="register_success">Pendaftaran berhasil! Silakan masuk.</string>
+    <string name="register_error_generic">Gagal mendaftar. Silakan coba lagi.</string>
+
+    <!-- Forgot Password Strings -->
+    <string name="forgot_password_title">Lupa Kata Sandi?</string>
+    <string name="forgot_password_tagline">Masukkan email yang terdaftar untuk mengatur ulang kata sandimu.</string>
+    <string name="forgot_password_button">Kirim Tautan</string>
+    <string name="forgot_password_back_prompt">Kembali ke Masuk</string>
+    <string name="forgot_password_error_empty">Masukkan email dulu.</string>
+    <string name="forgot_password_error_not_found">Email tidak terdaftar di sistem kami.</string>
+    <string name="forgot_password_success">Tautan pemulihan telah dikirim ke emailmu.</string>
+
     <!-- Navigation Strings -->
     <string name="nav_home">Home</string>
     <string name="nav_transaction">Transaksi</string>

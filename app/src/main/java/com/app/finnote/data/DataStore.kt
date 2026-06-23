@@ -90,6 +90,23 @@ object DataStore {
         }
     }
 
+    fun registerUser(email: String, name: String, password: String): Boolean {
+        return try {
+            val db = dbHelper.writableDatabase
+            val values = ContentValues().apply {
+                put("email", email.trim())
+                put("name", name.trim())
+                put("password", password)
+                val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
+                put("joined_date", sdf.format(Calendar.getInstance().time))
+            }
+            val result = db.insert("users", null, values)
+            result != -1L
+        } catch (_: Exception) {
+            false
+        }
+    }
+
     fun getCurrentUser(): User {
         return try {
             val db = dbHelper.readableDatabase

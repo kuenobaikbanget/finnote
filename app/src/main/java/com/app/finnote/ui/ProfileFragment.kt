@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.app.finnote.LoginActivity
+import com.app.finnote.MainActivity
 import com.app.finnote.R
 import com.app.finnote.data.DataStore
 
@@ -162,11 +163,7 @@ class ProfileFragment : Fragment() {
 
     private fun performLogout() {
         DataStore.logout()
-        val ctx = context ?: return
-        val intent = Intent(ctx, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
+        (requireActivity() as? MainActivity)?.openHome()
     }
 
     private fun getTopExpenseCategory(monthKey: String): String? {
