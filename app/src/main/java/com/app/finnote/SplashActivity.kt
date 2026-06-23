@@ -12,8 +12,6 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import com.app.finnote.data.DataStore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -61,13 +59,8 @@ class SplashActivity : AppCompatActivity() {
         scheduleLoadingDots(pbLoading)
 
         lifecycleScope.launch {
-            val minDelay = async { delay(MIN_DISPLAY_MS) }
-            val authResult = async(Dispatchers.IO) { DataStore.isLoggedIn() }
-
-            val loggedIn = authResult.await()
-            minDelay.await()
-
-            navigate(loggedIn)
+            delay(MIN_DISPLAY_MS)
+            navigate()
         }
     }
 
@@ -106,15 +99,14 @@ class SplashActivity : AppCompatActivity() {
         }, LOADING_DOTS_DELAY)
     }
 
-    private fun navigate(loggedIn: Boolean) {
+    private fun navigate() {
         if (navigated) return
         navigated = true
 
         handler.removeCallbacksAndMessages(null)
 
-        val target = if (loggedIn) MainActivity::class.java else LoginActivity::class.java
         startActivity(
-            Intent(this, target).apply {
+            Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
         )

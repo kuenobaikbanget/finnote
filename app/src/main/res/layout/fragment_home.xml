@@ -362,42 +362,6 @@
             app:layout_constraintStart_toEndOf="@id/ivHomeLogo"
             app:layout_constraintTop_toTopOf="@id/ivHomeLogo" />
 
-        <FrameLayout
-            android:id="@+id/layoutNotification"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginEnd="6dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/ivHomeProfile"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/ivHomeNotification"
-                android:layout_width="28dp"
-                android:layout_height="34dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/home_notification_desc"
-                android:src="@drawable/ic_notification"
-                app:tint="@color/black" />
-
-            <TextView
-                android:id="@+id/tvNotificationBadge"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="top|end"
-                android:background="@drawable/bg_notification_badge"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:text="9+"
-                tools:visibility="visible" />
-        </FrameLayout>
-
         <ImageView
             android:id="@+id/ivHomeProfile"
             android:layout_width="44dp"

@@ -35,16 +35,37 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         applyProfileInsets(view)
 
-        val user = DataStore.getCurrentUser()
+        val loggedIn = DataStore.isLoggedIn()
+        val user = if (loggedIn) DataStore.getCurrentUser() else null
 
-        view.findViewById<TextView>(R.id.tvProfileName).text =
-            user.name.ifBlank { getString(R.string.default_user_name) }
-        view.findViewById<TextView>(R.id.tvProfileEmail).text = user.email
-        view.findViewById<TextView>(R.id.tvProfileJoined).text =
-            getString(R.string.profile_joined_format, user.joinedDate)
+        val tvName = view.findViewById<TextView>(R.id.tvProfileName)
+        val tvEmail = view.findViewById<TextView>(R.id.tvProfileEmail)
+        val tvJoined = view.findViewById<TextView>(R.id.tvProfileJoined)
+        val btnAction = view.findViewById<TextView>(R.id.btnLogout)
+        val ivProfile = view.findViewById<android.widget.ImageView>(R.id.ivProfile)
+
+        if (loggedIn && user != null) {
+            tvName.text = user.name.ifBlank { getString(R.string.default_user_name) }
+            tvEmail.visibility = View.VISIBLE
+            tvEmail.text = user.email
+            tvJoined.visibility = View.VISIBLE
+            tvJoined.text = getString(R.string.profile_joined_format, user.joinedDate)
+            btnAction.text = getString(R.string.profile_logout_button)
+            btnAction.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.pale_red))
+            btnAction.setBackgroundResource(R.drawable.bg_logout_ripple)
+            bindLogout(view)
+        } else {
+            tvName.text = getString(R.string.guest_user_name)
+            tvEmail.visibility = View.GONE
+            tvJoined.visibility = View.GONE
+            btnAction.text = getString(R.string.profile_login_button)
+            btnAction.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.action_green_accessible))
+            btnAction.setBackgroundResource(R.drawable.bg_login_ripple)
+            ivProfile.setImageResource(R.drawable.ic_photo_profile_round)
+            bindLogin(view)
+        }
 
         bindStats(view)
-        bindLogout(view)
     }
 
     private fun applyProfileInsets(view: View) {
@@ -62,13 +83,27 @@ class ProfileFragment : Fragment() {
     }
 
     private fun bindStats(view: View) {
-        val transactions = DataStore.getAll()
+        val loggedIn = DataStore.isLoggedIn()
+        val transactions = if (loggedIn) DataStore.getAll() else emptyList()
         val monthKey = DataStore.getCurrentMonthKey()
 
-        view.findViewById<TextView>(R.id.tvTransactionCount).text =
-            getString(R.string.profile_transaction_count_format, transactions.size)
-        view.findViewById<TextView>(R.id.tvProfileTopCategory).text =
-            getTopExpenseCategory(monthKey) ?: getString(R.string.profile_top_category_empty)
+        val tvTransactionCount = view.findViewById<TextView>(R.id.tvTransactionCount)
+        val tvProfileTopCategory = view.findViewById<TextView>(R.id.tvProfileTopCategory)
+
+        if (loggedIn) {
+            tvTransactionCount.text = getString(R.string.profile_transaction_count_format, transactions.size)
+            tvProfileTopCategory.text = getTopExpenseCategory(monthKey) ?: getString(R.string.profile_top_category_empty)
+        } else {
+            tvTransactionCount.text = "-"
+            tvProfileTopCategory.text = "-"
+        }
+    }
+
+    private fun bindLogin(view: View) {
+        view.findViewById<TextView>(R.id.btnLogout).setOnClickListener {
+            val ctx = context ?: return@setOnClickListener
+            startActivity(Intent(ctx, LoginActivity::class.java))
+        }
     }
 
     private fun bindLogout(view: View) {

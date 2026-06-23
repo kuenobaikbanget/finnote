@@ -22,8 +22,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var tilPassword: TextInputLayout
     private lateinit var btnLogin: MaterialButton
     private lateinit var tvLoginError: android.widget.TextView
-    private lateinit var tvRegister: android.widget.TextView
-    private lateinit var tvForgotPassword: android.widget.TextView
+    private lateinit var tvRegister: MaterialButton
+    private lateinit var tvForgotPassword: MaterialButton
 
     private var isLoading = false
 
@@ -31,11 +31,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         DataStore.init(this)
-
-        if (DataStore.isLoggedIn()) {
-            navigateToMain()
-            return
-        }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT

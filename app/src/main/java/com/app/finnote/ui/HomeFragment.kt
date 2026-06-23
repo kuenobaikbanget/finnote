@@ -47,8 +47,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val tvWelcome = view.findViewById<TextView>(R.id.tvWelcome)
-        val tvNotificationBadge = view.findViewById<TextView>(R.id.tvNotificationBadge)
-        val layoutNotification = view.findViewById<View>(R.id.layoutNotification)
         val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
         applyHomeInsets(view)
         setupStickyHeaderMotion(view)
@@ -56,15 +54,6 @@ class HomeFragment : Fragment() {
         recentView?.setFragmentManager(parentFragmentManager, this)
         ivHomeProfile.setOnClickListener {
             (requireActivity() as? MainActivity)?.openProfile()
-        }
-        layoutNotification.setOnClickListener {
-            val count = DataStore.getNotificationCount()
-            val message = if (count <= 0) {
-                getString(R.string.home_notification_empty)
-            } else {
-                getString(R.string.home_notification_count, count)
-            }
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
         view.findViewById<View>(R.id.fabAddTransaction).setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -75,20 +64,21 @@ class HomeFragment : Fragment() {
 
         val user = DataStore.getCurrentUser()
         val firstName = user.name.split(" ")[0]
-        tvWelcome.text = getString(R.string.welcome_user, firstName)
-        bindNotificationBadge(tvNotificationBadge, DataStore.getNotificationCount())
-
-        bindHomeData(view)
-    }
-
-    private fun bindNotificationBadge(badge: TextView, notificationCount: Int) {
-        if (notificationCount <= 0) {
-            badge.visibility = View.GONE
-            return
+        tvWelcome.text = if (DataStore.isLoggedIn()) {
+            if (firstName.isBlank()) {
+                getString(R.string.welcome_guest)
+            } else {
+                getString(R.string.welcome_user, firstName)
+            }
+        } else {
+            "User"
+        }
+        
+        if (!DataStore.isLoggedIn()) {
+            ivHomeProfile.setImageResource(R.drawable.ic_photo_profile_round)
         }
 
-        badge.visibility = View.VISIBLE
-        badge.text = if (notificationCount > 9) "9+" else notificationCount.toString()
+        bindHomeData(view)
     }
 
     private fun applyHomeInsets(view: View) {
@@ -130,8 +120,6 @@ class HomeFragment : Fragment() {
         val layoutLogo = view.findViewById<View>(R.id.layoutLogo)
         val ivHomeLogo = view.findViewById<ImageView>(R.id.ivHomeLogo)
         val tvHomeLogoTitle = view.findViewById<TextView>(R.id.tvHomeLogoTitle)
-        val layoutNotification = view.findViewById<View>(R.id.layoutNotification)
-        val ivHomeNotification = view.findViewById<ImageView>(R.id.ivHomeNotification)
         val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
         val topMenuSeparator = view.findViewById<View>(R.id.topMenuSeparator)
 
@@ -147,8 +135,6 @@ class HomeFragment : Fragment() {
                 topMenuSeparator = topMenuSeparator,
                 ivHomeLogo = ivHomeLogo,
                 tvHomeLogoTitle = tvHomeLogoTitle,
-                layoutNotification = layoutNotification,
-                ivHomeNotification = ivHomeNotification,
                 ivHomeProfile = ivHomeProfile
             )
         }
@@ -161,8 +147,6 @@ class HomeFragment : Fragment() {
         topMenuSeparator: View,
         ivHomeLogo: ImageView,
         tvHomeLogoTitle: TextView,
-        layoutNotification: View,
-        ivHomeNotification: ImageView,
         ivHomeProfile: ImageView
     ) {
         val easedProgress = 1f - ((1f - progress) * (1f - progress))
@@ -176,9 +160,6 @@ class HomeFragment : Fragment() {
         tvHomeLogoTitle.scaleX = titleScale
         tvHomeLogoTitle.scaleY = titleScale
         tvHomeLogoTitle.translationX = lerp(0f, -4.dpToPx().toFloat(), easedProgress)
-        layoutNotification.translationX = lerp(0f, 3.dpToPx().toFloat(), easedProgress)
-        ivHomeNotification.scaleX = actionScale
-        ivHomeNotification.scaleY = actionScale
         ivHomeProfile.scaleX = actionScale
         ivHomeProfile.scaleY = actionScale
     }

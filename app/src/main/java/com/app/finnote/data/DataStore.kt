@@ -34,6 +34,26 @@ object DataStore {
         }
     }
 
+    fun getSessionEmail(): String? {
+        return try {
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(
+                "SELECT value FROM preferences WHERE key = 'session_email'",
+                null
+            )
+            cursor.use {
+                if (it.moveToFirst()) {
+                    val value = it.getString(it.getColumnIndexOrThrow("value"))
+                    if (value.isNullOrBlank()) null else value
+                } else {
+                    null
+                }
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     fun logout() {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {

@@ -4,7 +4,7 @@
 
     <!-- Login Strings -->
     <string name="splash_tagline">Kelola keuanganmu dengan tenang</string>
-    <string name="login_tagline">Catatan keuangan yang tenang</string>
+    <string name="login_tagline">Tahu ke mana uangmu pergi.</string>
     <string name="login_email_label">Email</string>
     <string name="login_email_hint">nama@email.com</string>
     <string name="login_password_label">Kata sandi</string>
@@ -23,7 +23,9 @@
 
     <!-- User & Welcome Strings -->
     <string name="default_user_name">Rizky</string>
+    <string name="guest_user_name">Masuk ke Akun</string>
     <string name="welcome_user">Selamat datang, %1$s!</string>
+    <string name="welcome_guest">Selamat datang!</string>
     <string name="monthly_expense_title">%1$s</string>
     <string name="monthly_limit_title">Batas Pengeluaran Bulan Ini</string>
 
@@ -74,7 +76,8 @@
     <string name="home_expense_icon_desc">Ikon pengeluaran</string>
     <string name="home_notification_desc">Notifikasi</string>
     <string name="home_profile_desc">Foto profil</string>
-    <string name="all_transaction_back_desc">Ikon kembali</string>
+    <string name="icon_back_desc">Ikon kembali</string>
+    <string name="all_transaction_back_desc">Kembali ke Home</string>
     <string name="detail_transaction_type_desc">Ikon Tipe Transaction</string>
 
     <!-- Transaction Strings -->
@@ -140,6 +143,7 @@
     <string name="profile_transaction_count_format">%1$d transaksi</string>
     <string name="profile_budget_usage_desc">%1$s, %2$s dari limit %3$s. Terpakai sekitar %4$d persen.</string>
     <string name="profile_logout_button">Keluar</string>
+    <string name="profile_login_button">Masuk</string>
     <string name="profile_logout_dialog_title">Keluar dari akun?</string>
     <string name="profile_logout_dialog_message">Kamu perlu masuk lagi untuk mengakses FinNote.</string>
     <string name="profile_logout_confirm">Keluar</string>

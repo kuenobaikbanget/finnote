@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="88dp"
                     android:fontFamily="@font/inter_bold"
+                    android:lineSpacingMultiplier="1.2"
                     android:text="@string/app_name"
                     android:textColor="@color/black"
                     android:textSize="28sp" />
@@ -53,8 +54,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/inter_regular"
+                    android:lineSpacingMultiplier="1.45"
                     android:text="@string/login_tagline"
-                    android:textColor="@color/grey"
+                    android:textColor="@color/text_muted_accessible"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -67,7 +69,7 @@
                 app:cardCornerRadius="24dp"
                 app:cardElevation="2dp"
                 app:cardMaxElevation="2dp"
-                app:layout_constraintBottom_toTopOf="@id/linkSection"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/brandSection"
@@ -109,6 +111,7 @@
                             android:fontFamily="@font/inter_regular"
                             android:imeOptions="actionNext"
                             android:inputType="textEmailAddress"
+                            android:lineSpacingMultiplier="1.45"
                             android:maxLines="1"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
@@ -142,24 +145,45 @@
                             android:fontFamily="@font/inter_regular"
                             android:imeOptions="actionDone"
                             android:inputType="textPassword"
+                            android:lineSpacingMultiplier="1.45"
                             android:maxLines="1"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/tvForgotPassword"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:fontFamily="@font/inter_bold"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="@string/login_forgot_password"
+                        android:textAllCaps="false"
+                        android:textColor="@color/deep_teal"
+                        android:textSize="14sp"
+                        app:cornerRadius="8dp" />
 
                     <TextView
                         android:id="@+id/tvLoginError"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="4dp"
                         android:layout_marginEnd="4dp"
                         android:accessibilityLiveRegion="polite"
                         android:fontFamily="@font/inter_regular"
                         android:gravity="center"
+                        android:lineSpacingMultiplier="1.45"
                         android:text="@string/login_error_invalid"
                         android:textColor="@color/expense_coral_accessible"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:visibility="gone"
                         tools:visibility="visible" />
 
@@ -167,66 +191,32 @@
                         android:id="@+id/btnLogin"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="4dp"
                         android:fontFamily="@font/inter_bold"
                         android:text="@string/login_button"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         app:backgroundTint="@color/action_green_accessible"
                         app:cornerRadius="14dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/tvRegister"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="@string/login_register"
+                        android:textAllCaps="false"
+                        android:textColor="@color/action_green_accessible"
+                        android:textSize="14sp"
+                        app:backgroundTint="@color/white"
+                        app:cornerRadius="14dp"
+                        app:strokeColor="@color/action_green_accessible"
+                        app:strokeWidth="1.5dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <LinearLayout
-                android:id="@+id/linkSection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:layout_marginBottom="40dp"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/loginCard">
-
-                <TextView
-                    android:id="@+id/tvRegister"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:fontFamily="@font/inter_medium"
-                    android:padding="8dp"
-                    android:text="@string/login_register"
-                    android:textColor="@color/deep_teal"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:fontFamily="@font/inter_regular"
-                    android:gravity="center"
-                    android:textColor="@color/divider_mist"
-                    android:textSize="14sp"
-                    android:text="·" />
-
-                <TextView
-                    android:id="@+id/tvForgotPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:fontFamily="@font/inter_medium"
-                    android:padding="8dp"
-                    android:text="@string/login_forgot_password"
-                    android:textColor="@color/deep_teal"
-                    android:textSize="14sp" />
-            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
