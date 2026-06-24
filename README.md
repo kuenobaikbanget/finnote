@@ -29,4 +29,4 @@ FinNote sengaja menghindari antarmuka aplikasi keuangan korporat yang kaku atau 
 
 ## Unduh APK
 
-File APK FinNote dapat diunduh melalui halaman berikut: [FinNote v1.0.0](https://github.com/kuenobaikbanget/finnote/releases/tag/1.0.0).
+File APK FinNote dapat diunduh melalui halaman berikut: [FinNote v1.0.1](https://github.com/kuenobaikbanget/finnote/releases/tag/1.0.1).
