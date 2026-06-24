@@ -53,7 +53,7 @@ class AllTransactionsFragment : Fragment() {
 
         view.findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabAddTransaction).setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, AddTransactionFragment())
+                .replace(R.id.fragmentContainer, TransactionFormFragment())
                 .addToBackStack(null)
                 .commit()
         }

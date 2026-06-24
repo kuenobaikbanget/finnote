@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
@@ -60,6 +61,51 @@ class TransactionDetailFragment : Fragment() {
 
         view.findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+
+        view.findViewById<View>(R.id.btnMore).setOnClickListener { anchor ->
+            val popup = PopupMenu(requireContext(), anchor)
+            popup.menuInflater.inflate(R.menu.menu_transaction_detail, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_edit -> {
+                        val fragment = TransactionFormFragment.newInstance(transactionId)
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainer, fragment)
+                            .addToBackStack(null)
+                            .commit()
+                        true
+                    }
+                    R.id.action_delete -> {
+                        showDeleteConfirmationDialog()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_transaction, null)
+        val dialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogView)
+            .show()
+
+        dialog.window?.setBackgroundDrawable(
+            ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_delete)
+        )
+
+        dialogView.findViewById<View>(R.id.btnCancelDelete).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<View>(R.id.btnConfirmDelete).setOnClickListener {
+            if (DataStore.deleteTransaction(transactionId)) {
+                dialog.dismiss()
+                parentFragmentManager.popBackStack()
+            }
         }
     }
 

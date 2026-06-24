@@ -34,7 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class AddTransactionFragment : Fragment() {
+class TransactionFormFragment : Fragment() {
     private val primaryExpenseCategories = listOf(
         "Makan & Minum",
         "Transport",
@@ -67,6 +67,8 @@ class AddTransactionFragment : Fragment() {
     private var isFormattingAmount = false
     private var hasAttemptedSave = false
     private var discardDialog: BottomSheetDialog? = null
+    private var editTransactionId: Int = -1
+    private var isEditMode: Boolean = false
     private val selectedDate = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val displayDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
@@ -100,7 +102,7 @@ class AddTransactionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_add_transaction, container, false)
+        return inflater.inflate(R.layout.fragment_transaction_form, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -178,11 +180,44 @@ class AddTransactionFragment : Fragment() {
     }
 
     private fun setupInitialState(savedInstanceState: Bundle?) {
-        typeToggle.check(R.id.btnTypeExpense)
+        editTransactionId = arguments?.getInt(ARG_TRANSACTION_ID, -1) ?: -1
+        isEditMode = editTransactionId != -1
+
+        if (isEditMode && savedInstanceState == null) {
+            val existing = DataStore.getTransactionById(editTransactionId)
+            if (existing != null) {
+                transactionType = existing.type
+                selectedCategory = existing.category
+                etTitle.setText(existing.title)
+                etAmount.setText(amountFormat.format(existing.amount.toLong()))
+                etDescription.setText(existing.description)
+                
+                try {
+                    val parsed = dateFormat.parse(existing.date)
+                    if (parsed != null) {
+                        selectedDate.time = parsed
+                    }
+                } catch (_: Exception) {}
+            }
+        }
+
+        typeToggle.check(if (transactionType == TYPE_INCOME) R.id.btnTypeIncome else R.id.btnTypeExpense)
         if (savedInstanceState == null) {
             etDate.setText(formatDateLabel())
         }
         updateDateA11yLabel()
+        
+        val tvHeaderTitle = view?.findViewById<TextView>(R.id.tvHeaderTitle)
+        if (isEditMode) {
+            tvHeaderTitle?.setText(R.string.edit_transaction_title)
+            if (selectedCategory != null) {
+                tvCategoryValue.text = selectedCategory
+                tvCategoryValue.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            }
+        } else {
+            tvHeaderTitle?.setText(R.string.add_transaction_title)
+        }
+
         renderCategoryChips()
         updateTypeButtonColors()
     }
@@ -455,20 +490,35 @@ class AddTransactionFragment : Fragment() {
 
         btnSave.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
 
-        val transaction = Transaction(
-            title = title,
-            amount = amount!!.toInt(),
-            date = dateFormat.format(selectedDate.time),
-            type = transactionType,
-            category = category!!,
-            description = etDescription.text.toString().trim()
-        )
-        val newId = DataStore.addTransaction(transaction).toInt()
+        if (isEditMode) {
+            val updated = Transaction(
+                id = editTransactionId,
+                title = title,
+                amount = amount!!.toInt(),
+                date = dateFormat.format(selectedDate.time),
+                type = transactionType,
+                category = category!!,
+                description = etDescription.text.toString().trim()
+            )
+            DataStore.updateTransaction(updated)
+            isDirty = false
+            parentFragmentManager.popBackStack()
+        } else {
+            val transaction = Transaction(
+                title = title,
+                amount = amount!!.toInt(),
+                date = dateFormat.format(selectedDate.time),
+                type = transactionType,
+                category = category!!,
+                description = etDescription.text.toString().trim()
+            )
+            val newId = DataStore.addTransaction(transaction).toInt()
 
-        isDirty = false
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, TransactionSuccessFragment.newInstance(newId))
-            .commit()
+            isDirty = false
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, TransactionSuccessFragment.newInstance(newId))
+                .commit()
+        }
     }
 
     private fun updateSaveState() {
@@ -776,5 +826,14 @@ class AddTransactionFragment : Fragment() {
         private const val KEY_AMOUNT = "add_transaction_amount"
         private const val KEY_TITLE = "add_transaction_title"
         private const val KEY_DESCRIPTION = "add_transaction_description"
+        private const val ARG_TRANSACTION_ID = "transaction_id"
+
+        fun newInstance(transactionId: Int = -1): TransactionFormFragment {
+            val fragment = TransactionFormFragment()
+            val args = Bundle()
+            args.putInt(ARG_TRANSACTION_ID, transactionId)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

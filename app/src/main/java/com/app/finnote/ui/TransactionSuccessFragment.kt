@@ -143,7 +143,7 @@ class TransactionSuccessFragment : Fragment() {
 
         view.findViewById<MaterialButton>(R.id.btnAddAnotherTransaction).setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, AddTransactionFragment())
+                .replace(R.id.fragmentContainer, TransactionFormFragment())
                 .commit()
         }
     }

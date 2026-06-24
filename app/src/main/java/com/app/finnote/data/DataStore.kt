@@ -223,6 +223,43 @@ object DataStore {
         }
     }
 
+    fun updateTransaction(transaction: Transaction): Boolean {
+        return try {
+            val db = dbHelper.writableDatabase
+            val values = ContentValues().apply {
+                put("title", transaction.title)
+                put("amount", transaction.amount)
+                put("date", transaction.date)
+                put("type", transaction.type)
+                put("category", transaction.category)
+                put("description", transaction.description)
+            }
+            val affected = db.update(
+                "transactions",
+                values,
+                "id = ?",
+                arrayOf(transaction.id.toString())
+            )
+            affected > 0
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun deleteTransaction(id: Int): Boolean {
+        return try {
+            val db = dbHelper.writableDatabase
+            val affected = db.delete(
+                "transactions",
+                "id = ?",
+                arrayOf(id.toString())
+            )
+            affected > 0
+        } catch (_: Exception) {
+            false
+        }
+    }
+
     // ── Monthly Budgets ───────────────────────────────────
 
     fun getMonthlyLimit(monthKey: String): Int {

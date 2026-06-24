@@ -76,6 +76,13 @@
     <string name="budget_used_label">Terpakai %1$s</string>
     <string name="budget_limit_label">Limit %1$s</string>
     <string name="budget_edit_action">Edit</string>
+    <string name="action_edit">Edit</string>
+    <string name="icon_more_desc">Opsi lainnya</string>
+    <string name="action_delete">Hapus</string>
+    <string name="dialog_delete_title">Hapus Transaksi?</string>
+    <string name="dialog_delete_message">Data yang dihapus tidak bisa dikembalikan.</string>
+    <string name="dialog_delete_confirm">Hapus</string>
+    <string name="dialog_delete_cancel">Batal</string>
     <string name="budget_edit_title">Ubah Batas Bulanan</string>
     <string name="budget_edit_hint">Batas pengeluaran</string>
     <string name="budget_edit_zero_hint">0</string>
@@ -117,6 +124,7 @@
     <string name="transaction_item_desc">%1$s, %2$s, %3$s, %4$s. Ketuk untuk melihat detail.</string>
     <string name="add_transaction">Tambah Transaksi</string>
     <string name="add_transaction_title">Tambah Transaksi</string>
+    <string name="edit_transaction_title">Edit Transaksi</string>
     <string name="add_transaction_type_label">Tipe</string>
     <string name="add_transaction_amount_hint">Nominal</string>
     <string name="add_transaction_amount_prefix">Rp</string>
