@@ -122,7 +122,7 @@ class AllTransactionsFragment : Fragment() {
 
     private fun loadTransactions(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.allTransactionsRecyclerView)
-        val emptyText = view.findViewById<TextView>(R.id.tvAllTransactionsEmpty)
+        val emptyContainer = view.findViewById<View>(R.id.layoutAllTransactionsEmpty)
         val transactions = DataStore.getAll()
         val groupedTransactions = groupTransactionsByMonth(transactions)
 
@@ -131,7 +131,7 @@ class AllTransactionsFragment : Fragment() {
 
         val isEmpty = groupedTransactions.isEmpty()
         recyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
-        emptyText.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        emptyContainer.visibility = if (isEmpty) View.VISIBLE else View.GONE
     }
 
     private fun groupTransactionsByMonth(transactions: List<Transaction>): Map<String, List<Transaction>> {

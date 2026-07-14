@@ -28,42 +28,63 @@
         android:textColor="@color/black"
         android:textSize="20sp" />
 
-    <com.google.android.material.card.MaterialCardView
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/inter"
+        android:text="@string/edit_profile_subtitle"
+        android:textColor="@color/text_muted_accessible"
+        android:textSize="13sp" />
+
+    <!-- Avatar picker: foto bulat + label "Ganti foto" -->
+    <LinearLayout
         android:id="@+id/avatarPickerCard"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:clickable="true"
         android:focusable="true"
         android:contentDescription="@string/edit_profile_photo_desc"
-        app:cardCornerRadius="40dp"
-        app:cardElevation="0dp"
-        app:strokeColor="@color/deep_teal"
-        app:strokeWidth="1.5dp">
+        android:orientation="vertical"
+        android:gravity="center">
 
-        <ImageView
-            android:id="@+id/ivEditAvatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/profile_photo_desc"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_photo_profile_round" />
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            app:cardCornerRadius="44dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/deep_teal"
+            app:strokeWidth="1.5dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#44000000"
-            android:importantForAccessibility="no" />
+            <ImageView
+                android:id="@+id/ivEditAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/profile_photo_desc"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_photo_profile_round" />
 
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="@string/edit_profile_change_photo"
+            android:textColor="@color/deep_teal"
+            android:textSize="13sp" />
+
+    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilEditName"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:hint="@string/edit_profile_name_hint"
         app:boxCornerRadiusBottomEnd="12dp"
         app:boxCornerRadiusBottomStart="12dp"
@@ -103,7 +124,7 @@
         android:id="@+id/btnEditProfileCancel"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="0dp"
         android:fontFamily="@font/inter_medium"
         android:text="@string/edit_profile_cancel"
         android:textAllCaps="false"

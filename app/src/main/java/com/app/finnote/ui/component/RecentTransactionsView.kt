@@ -60,12 +60,37 @@ class RecentTransactionsView @JvmOverloads constructor(
 
         val items = transactions.takeLast(maxItems).reversed()
         if (items.isEmpty()) {
+            val dpToPx = { dp: Int -> android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics
+            ).toInt() }
+
+            val emptyContainer = LinearLayout(context).apply {
+                orientation = VERTICAL
+                gravity = android.view.Gravity.CENTER
+                setPadding(0, dpToPx(32), 0, dpToPx(32))
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            }
+            
+            val icon = android.widget.ImageView(context).apply {
+                setImageResource(R.drawable.ic_empty_wallet)
+                setColorFilter(ContextCompat.getColor(context, R.color.text_muted_accessible))
+                alpha = 0.4f
+                layoutParams = LayoutParams(dpToPx(48), dpToPx(48)).apply {
+                    bottomMargin = dpToPx(12)
+                }
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            }
+
             val empty = TextView(context).apply {
                 text = context.getString(R.string.recent_transactions_empty)
                 textSize = 14f
+                gravity = android.view.Gravity.CENTER
                 setTextColor(ContextCompat.getColor(context, R.color.text_muted_accessible))
             }
-            listContainer.addView(empty)
+            
+            emptyContainer.addView(icon)
+            emptyContainer.addView(empty)
+            listContainer.addView(emptyContainer)
             return
         }
 

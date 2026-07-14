@@ -10,13 +10,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -51,22 +54,31 @@ class ProfileFragment : Fragment() {
         bindProfile(view)
         bindStats(view)
 
-        // Tap kartu profil → buka edit sheet
+        // Tap area nama → buka sheet edit profil
         view.findViewById<View>(R.id.profileCard).setOnClickListener { showEditDialog() }
         view.findViewById<View>(R.id.tvProfileName).setOnClickListener { showEditDialog() }
-
-        // Sembunyikan tombol logout (tidak ada auth)
+        // Tap avatar → langsung buka sheet edit profil (avatar di card adalah FrameLayout yang clickable)
+        view.findViewById<View>(R.id.avatarContainer).setOnClickListener { showEditDialog() }
     }
 
     private fun bindProfile(view: View) {
         val tvName = view.findViewById<TextView>(R.id.tvProfileName)
-        val tvEmail = view.findViewById<TextView>(R.id.tvProfileEmail)
         val tvJoined = view.findViewById<TextView>(R.id.tvProfileJoined)
         val ivProfile = view.findViewById<ImageView>(R.id.ivProfile)
 
         val name = DataStore.getUserName()
-        tvName.text = name.ifBlank { getString(R.string.profile_setup_name_hint) }
-        tvEmail.visibility = View.GONE
+        if (name.isBlank()) {
+            // State belum diisi: tampil sebagai placeholder muted, bukan bold hitam
+            tvName.text = getString(R.string.profile_setup_name_hint)
+            tvName.setTextColor(resources.getColor(R.color.text_muted_accessible, null))
+            tvName.setTypeface(tvName.typeface, android.graphics.Typeface.NORMAL)
+            tvName.textSize = 15f
+        } else {
+            tvName.text = name
+            tvName.setTextColor(resources.getColor(R.color.black, null))
+            tvName.setTypeface(null, android.graphics.Typeface.BOLD)
+            tvName.textSize = 18f
+        }
 
         val joined = DataStore.getJoinedDate()
         if (joined.isNotBlank()) {
@@ -82,11 +94,13 @@ class ProfileFragment : Fragment() {
     private fun loadAvatar(iv: ImageView) {
         val uri = DataStore.getAvatarUri()
         if (uri != null) {
-            try { iv.setImageURI(Uri.parse(uri)) } catch (_: Exception) {
-                iv.setImageResource(R.mipmap.ic_photo_profile_round)
+            try {
+                iv.setImageURI(Uri.parse(uri))
+            } catch (_: Exception) {
+                iv.setImageResource(R.drawable.ic_photo_profile_round)
             }
         } else {
-            iv.setImageResource(R.mipmap.ic_photo_profile_round)
+            iv.setImageResource(R.drawable.ic_photo_profile_round)
         }
     }
 
@@ -160,6 +174,30 @@ class ProfileFragment : Fragment() {
         }
         editDialog = dialog
 
+        // Konfigurasi window (warna nav bar, dsb.) harus di-set SEBELUM show(),
+        // supaya sistem tidak sempat menggambar scrim kontras transparan dulu
+        // sebelum kita override jadi putih solid.
+        dialog.window?.apply {
+            WindowCompat.setDecorFitsSystemWindows(this, false)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // Dialog window tidak otomatis punya flag ini seperti Activity, sehingga
+            // navigationBarColor di bawah tidak akan berefek tanpa baris ini.
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+            // Warna nav bar putih solid (bukan transparan) supaya home indicator
+            // menyatu penuh dengan bottom sheet, tanpa efek dim/scrim di baliknya.
+            navigationBarColor = ContextCompat.getColor(ctx, R.color.white)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                isNavigationBarContrastEnforced = false
+            }
+            // Hilangkan hairline divider bawaan sistem antara konten & nav bar
+            // (muncul di API 28+), yang membuat seam terlihat meski warnanya sama.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                navigationBarDividerColor = ContextCompat.getColor(ctx, R.color.white)
+            }
+            WindowInsetsControllerCompat(this, decorView).isAppearanceLightNavigationBars = true
+        }
+
         sheetView.findViewById<MaterialButton>(R.id.btnEditProfileSave).setOnClickListener {
             val name = etName.text?.toString()?.trim().orEmpty()
             DataStore.setUserName(name)
@@ -179,11 +217,12 @@ class ProfileFragment : Fragment() {
         }
 
         dialog.show()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.apply {
-            setBackgroundColor(Color.TRANSPARENT)
-            (parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
-        }
+        dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            ?.apply {
+                setBackgroundColor(Color.TRANSPARENT)
+                backgroundTintList = android.content.res.ColorStateList.valueOf(Color.TRANSPARENT)
+                (parent as? View)?.setBackgroundColor(Color.TRANSPARENT)
+            }
         ViewCompat.requestApplyInsets(sheetContent)
     }
 

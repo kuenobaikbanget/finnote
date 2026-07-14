@@ -3,13 +3,16 @@
     android:height="120dp"
     android:viewportWidth="120"
     android:viewportHeight="120">
+    <!-- background circle: mint-tinted, bukan abu-abu murni -->
     <path
-        android:fillColor="#E0E0E0"
+        android:fillColor="#dceee4"
         android:pathData="M60,60m-60,0a60,60 0,1 1,120 0a60,60 0,1 1,-120 0" />
+    <!-- head: deep-teal muted -->
     <path
-        android:fillColor="#BDBDBD"
+        android:fillColor="#8aada0"
         android:pathData="M60,45m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0" />
+    <!-- body: deep-teal muted -->
     <path
-        android:fillColor="#BDBDBD"
+        android:fillColor="#8aada0"
         android:pathData="M60,70c-25,0 -35,12 -35,20v5h70v-5c0,-8 -10,-20 -35,-20z" />
 </vector>

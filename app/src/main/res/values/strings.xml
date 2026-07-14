@@ -133,10 +133,12 @@
     <string name="profile_top_category_empty">Belum ada</string>
     <string name="profile_transaction_count_format">%1$d transaksi</string>
     <string name="profile_budget_usage_desc">%1$s, %2$s dari limit %3$s. Terpakai sekitar %4$d persen.</string>
-    <string name="profile_setup_name_hint">Atur nama kamu</string>
+    <string name="profile_setup_name_hint">Ketuk untuk atur nama</string>
     <string name="edit_profile_title">Edit Profil</string>
+    <string name="edit_profile_subtitle">Nama dan foto hanya tersimpan di perangkat ini.</string>
     <string name="edit_profile_name_hint">Nama kamu</string>
     <string name="edit_profile_photo_desc">Ketuk untuk ganti foto profil</string>
+    <string name="edit_profile_change_photo">Ganti foto</string>
     <string name="edit_profile_save">Simpan</string>
     <string name="edit_profile_cancel">Batal</string>
 
