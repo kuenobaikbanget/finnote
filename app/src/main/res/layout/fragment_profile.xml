@@ -29,7 +29,7 @@
         android:layout_marginTop="20dp"
         android:clipToPadding="false"
         android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@id/btnLogout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitlePage">
@@ -90,12 +90,14 @@
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:focusable="true"
+                        android:clickable="true"
                         app:layout_constraintBottom_toTopOf="@id/tvProfileEmail"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/avatarContainer"
                         app:layout_constraintTop_toTopOf="@id/avatarContainer"
                         app:layout_constraintVertical_chainStyle="packed"
-                        tools:text="Rizky Pratama" />
+                        tools:text="Masuk ke Akun" />
 
                     <TextView
                         android:id="@+id/tvProfileEmail"
@@ -228,28 +230,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <TextView
-        android:id="@+id/btnLogout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/bg_logout_ripple"
-        android:clickable="true"
-        android:contentDescription="@string/profile_logout_button"
-        android:focusable="true"
-        android:gravity="center"
-        android:minHeight="52dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="14dp"
-        android:text="@string/profile_logout_button"
-        android:textColor="@color/pale_red"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

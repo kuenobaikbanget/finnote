@@ -2,6 +2,7 @@ package com.app.finnote.ui
 
 import android.animation.ValueAnimator
 import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,23 +63,23 @@ class HomeFragment : Fragment() {
                 .commit()
         }
 
-        val user = DataStore.getCurrentUser()
-        val firstName = user.name.split(" ")[0]
-        tvWelcome.text = if (DataStore.isLoggedIn()) {
-            if (firstName.isBlank()) {
-                getString(R.string.welcome_guest)
-            } else {
-                getString(R.string.welcome_user, firstName)
-            }
-        } else {
-            "User"
-        }
-        
-        if (!DataStore.isLoggedIn()) {
-            ivHomeProfile.setImageResource(R.drawable.ic_photo_profile_round)
-        }
+        val firstName = DataStore.getUserName().split(" ")[0]
+        tvWelcome.text = if (firstName.isBlank()) getString(R.string.welcome_guest)
+                         else getString(R.string.welcome_user, firstName)
+        bindAvatar(ivHomeProfile)
 
         bindHomeData(view)
+    }
+
+    private fun bindAvatar(iv: ImageView) {
+        val uri = DataStore.getAvatarUri()
+        if (uri != null) {
+            try { iv.setImageURI(Uri.parse(uri)) } catch (_: Exception) {
+                iv.setImageResource(R.drawable.ic_photo_profile_round)
+            }
+        } else {
+            iv.setImageResource(R.drawable.ic_photo_profile_round)
+        }
     }
 
     private fun applyHomeInsets(view: View) {

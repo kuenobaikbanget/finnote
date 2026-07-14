@@ -1,58 +1,13 @@
 <resources>
     <!-- App-Level Strings -->
     <string name="app_name">FinNote</string>
-
-    <!-- Login Strings -->
     <string name="splash_tagline">Kelola keuanganmu dengan tenang</string>
-    <string name="login_tagline">Tahu ke mana uangmu pergi.</string>
-    <string name="login_email_label">Email</string>
-    <string name="login_email_hint">nama@email.com</string>
-    <string name="login_password_label">Kata sandi</string>
-    <string name="login_password_hint">Masukkan kata sandi</string>
-    <string name="login_button">Masuk</string>
-    <string name="login_register">Daftar</string>
-    <string name="login_forgot_password">Lupa kata sandi?</string>
-    <string name="login_error_empty_email">Masukkan email dulu.</string>
-    <string name="login_error_empty_password">Masukkan kata sandi dulu.</string>
-    <string name="login_error_invalid">Email atau kata sandi salah.</string>
-    <string name="login_guest_separator">atau</string>
-    <string name="login_guest_button">Masuk sebagai tamu</string>
-    <string name="login_todo_message">Segera hadir</string>
-
-    <!-- Register Strings -->
-    <string name="register_title">Daftar Akun</string>
-    <string name="register_tagline">Mulai langkah mencatat keuanganmu dengan tenang.</string>
-    <string name="register_name_hint">Nama lengkap</string>
-    <string name="register_email_hint">Alamat email</string>
-    <string name="register_password_hint">Kata sandi baru</string>
-    <string name="register_password_confirm_hint">Konfirmasi kata sandi</string>
-    <string name="register_button">Daftar</string>
-    <string name="register_login_prompt">Sudah punya akun? Masuk</string>
-    <string name="register_error_empty_name">Masukkan nama dulu.</string>
-    <string name="register_error_empty_email">Masukkan email dulu.</string>
-    <string name="register_error_empty_password">Masukkan kata sandi dulu.</string>
-    <string name="register_error_empty_confirm_password">Konfirmasi kata sandi dulu.</string>
-    <string name="register_error_password_mismatch">Konfirmasi kata sandi tidak cocok.</string>
-    <string name="register_error_duplicate_email">Email sudah terdaftar.</string>
-    <string name="register_success">Pendaftaran berhasil! Silakan masuk.</string>
-    <string name="register_error_generic">Gagal mendaftar. Silakan coba lagi.</string>
-
-    <!-- Forgot Password Strings -->
-    <string name="forgot_password_title">Lupa Kata Sandi?</string>
-    <string name="forgot_password_tagline">Masukkan email yang terdaftar untuk mengatur ulang kata sandimu.</string>
-    <string name="forgot_password_button">Kirim Tautan</string>
-    <string name="forgot_password_back_prompt">Kembali ke Masuk</string>
-    <string name="forgot_password_error_empty">Masukkan email dulu.</string>
-    <string name="forgot_password_error_not_found">Email tidak terdaftar di sistem kami.</string>
-    <string name="forgot_password_success">Tautan pemulihan telah dikirim ke emailmu.</string>
 
     <!-- Navigation Strings -->
     <string name="nav_home">Home</string>
     <string name="nav_transaction">Transaksi</string>
 
-    <!-- User & Welcome Strings -->
-    <string name="default_user_name">Rizky</string>
-    <string name="guest_user_name">Masuk ke Akun</string>
+    <!-- User &amp; Welcome Strings -->
     <string name="welcome_user">Selamat datang, %1$s!</string>
     <string name="welcome_guest">Selamat datang!</string>
     <string name="monthly_expense_title">%1$s</string>
@@ -167,7 +122,6 @@
     <!-- Profile Strings -->
     <string name="profil">Profil</string>
     <string name="profile_name">%1$s</string>
-    <string name="profile_email">%1$s</string>
     <string name="all_transactions_title">Semua Transaksi</string>
     <string name="profile_joined">Bergabung sejak</string>
     <string name="profile_joined_format">Bergabung sejak %1$s</string>
@@ -179,12 +133,12 @@
     <string name="profile_top_category_empty">Belum ada</string>
     <string name="profile_transaction_count_format">%1$d transaksi</string>
     <string name="profile_budget_usage_desc">%1$s, %2$s dari limit %3$s. Terpakai sekitar %4$d persen.</string>
-    <string name="profile_logout_button">Keluar</string>
-    <string name="profile_login_button">Masuk</string>
-    <string name="profile_logout_dialog_title">Keluar dari akun?</string>
-    <string name="profile_logout_dialog_message">Kamu perlu masuk lagi untuk mengakses FinNote.</string>
-    <string name="profile_logout_confirm">Keluar</string>
-    <string name="profile_logout_cancel">Batal</string>
+    <string name="profile_setup_name_hint">Atur nama kamu</string>
+    <string name="edit_profile_title">Edit Profil</string>
+    <string name="edit_profile_name_hint">Nama kamu</string>
+    <string name="edit_profile_photo_desc">Ketuk untuk ganti foto profil</string>
+    <string name="edit_profile_save">Simpan</string>
+    <string name="edit_profile_cancel">Batal</string>
 
     <!-- Transaction Details Strings -->
     <string name="transaction_detail_title">Detail Transaksi</string>
