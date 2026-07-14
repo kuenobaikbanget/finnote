@@ -97,16 +97,72 @@ class TransactionDetailFragment : Fragment() {
             ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_delete)
         )
 
-        dialogView.findViewById<View>(R.id.btnCancelDelete).setOnClickListener {
+        val btnCancel = dialogView.findViewById<View>(R.id.btnCancelDelete)
+        val btnConfirm = dialogView.findViewById<View>(R.id.btnConfirmDelete)
+        val ivWarning = dialogView.findViewById<ImageView>(R.id.ivWarningIcon)
+
+        // Micro-interaction: warning icon slight rotation on dialog display
+        ivWarning?.postDelayed({
+            ivWarning.animate()
+                .rotation(200f)
+                .setDuration(150)
+                .withEndAction {
+                    ivWarning.animate()
+                        .rotation(180f)
+                        .setDuration(150)
+                        .start()
+                }
+                .start()
+        }, 100)
+
+        btnCancel.setOnClickListener {
             dialog.dismiss()
         }
 
-        dialogView.findViewById<View>(R.id.btnConfirmDelete).setOnClickListener {
-            if (DataStore.deleteTransaction(transactionId)) {
-                dialog.dismiss()
-                parentFragmentManager.popBackStack()
-            }
+        btnConfirm.setOnClickListener {
+            // Animasi scale down & fade out dialog content sebelum ditutup
+            dialogView.animate()
+                .scaleX(0.9f)
+                .scaleY(0.9f)
+                .alpha(0f)
+                .setDuration(180)
+                .setInterpolator(android.view.animation.AccelerateInterpolator())
+                .withEndAction {
+                    if (DataStore.deleteTransaction(transactionId)) {
+                        dialog.dismiss()
+                        showDeleteSuccessSnackbar()
+                        parentFragmentManager.popBackStack()
+                    }
+                }
+                .start()
         }
+    }
+
+    private fun showDeleteSuccessSnackbar() {
+        val view = activity?.findViewById<View>(android.R.id.content) ?: return
+        val snackbar = com.google.android.material.snackbar.Snackbar.make(
+            view,
+            "Transaksi berhasil dihapus",
+            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+        )
+
+        val bottomNav = activity?.findViewById<View>(R.id.customBottomNav)
+        if (bottomNav != null) {
+            snackbar.anchorView = bottomNav
+        }
+
+        val snackbarView = snackbar.view
+        val params = snackbarView.layoutParams as? ViewGroup.MarginLayoutParams
+        params?.setMargins(48, 0, 48, 48)
+        snackbarView.layoutParams = params
+
+        snackbarView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_snackbar)
+        val textView = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        textView.typeface = androidx.core.content.res.ResourcesCompat.getFont(requireContext(), R.font.inter_bold)
+        textView.textSize = 14f
+
+        snackbar.show()
     }
 
     private fun setupUI(view: View) {
