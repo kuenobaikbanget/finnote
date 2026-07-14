@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.app.finnote.R
@@ -757,9 +758,12 @@ class TransactionFormFragment : Fragment() {
         }
 
         dialog.show()
-        dialog.window?.setBackgroundDrawable(
-            android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
-        )
+        dialog.window?.apply {
+            WindowCompat.setDecorFitsSystemWindows(this, false)
+            setBackgroundDrawable(
+                android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
+            )
+        }
         dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             ?.apply {
                 setBackgroundColor(android.graphics.Color.TRANSPARENT)
