@@ -49,6 +49,10 @@ class TransactionSuccessFragment : Fragment() {
         setupActions(view)
         setupBackHandling()
         playEntranceAnimation(view)
+
+        view.findViewById<View>(R.id.btnBack).setOnClickListener {
+            returnToPreviousSurface()
+        }
     }
 
     private fun applyInsets(view: View) {
@@ -58,6 +62,9 @@ class TransactionSuccessFragment : Fragment() {
         val initialPaddingRight = content.paddingRight
         val initialPaddingBottom = content.paddingBottom
 
+        val btnBackContainer = view.findViewById<View>(R.id.btnBackContainer)
+        val initialBackMarginTop = (btnBackContainer.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
             val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             content.setPadding(
@@ -66,6 +73,9 @@ class TransactionSuccessFragment : Fragment() {
                 initialPaddingRight,
                 initialPaddingBottom
             )
+            btnBackContainer.layoutParams = (btnBackContainer.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                topMargin = initialBackMarginTop + statusBars.top
+            }
             insets
         }
         ViewCompat.requestApplyInsets(view)
