@@ -12,7 +12,6 @@ FinNote adalah aplikasi pencatat keuangan (*expense tracker*) Android yang diran
 - **Batas Anggaran (Budget Limit)**: Pantau batas pengeluaran bulanan dengan indikator *progress bar* yang intuitif dan tidak menghakimi.
 - **Sistem Autentikasi**: Alur masuk (*Login*), daftar (*Register*), dan lupa sandi yang mulus dengan arsitektur *Single-Activity* dan animasi transisi kustom.
 - **Riwayat Terstruktur**: Seluruh transaksi dikelompokkan secara otomatis berdasarkan bulan berjalan.
-- **Mode Tamu (Guest Mode)**: Akses *read-only* agar pengguna dapat mencoba aplikasi tanpa keharusan membuat akun.
 
 ## Tech Stack
 
@@ -29,4 +28,5 @@ FinNote sengaja menghindari antarmuka aplikasi keuangan korporat yang kaku atau 
 
 ## Unduh APK
 
-File APK FinNote dapat diunduh melalui halaman berikut: [FinNote](https://github.com/kuenobaikbanget/finnote/releases/tag/1.0.2).
+File APK FinNote dapat diunduh melalui halaman berikut: 
+[FinNote](https://github.com/kuenobaikbanget/finnote/releases/tag/1.0.3).
