@@ -13,6 +13,11 @@
         <item name="android:fontFamily">@font/inter</item>
     </style>
 
+    <style name="RoundedCornerMedium" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
     <style name="Theme.FinNote.Splash" parent="Theme.FinNote">
         <item name="android:windowBackground">@drawable/bg_splash_window</item>
     </style>

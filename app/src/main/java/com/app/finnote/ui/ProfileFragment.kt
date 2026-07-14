@@ -201,7 +201,12 @@ class ProfileFragment : Fragment() {
         sheetView.findViewById<MaterialButton>(R.id.btnEditProfileSave).setOnClickListener {
             val name = etName.text?.toString()?.trim().orEmpty()
             DataStore.setUserName(name)
-            pendingAvatarUri?.let { DataStore.setAvatarUri(it.toString()) }
+            pendingAvatarUri?.let { 
+                requireContext().contentResolver.takePersistableUriPermission(
+                    it, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                DataStore.setAvatarUri(it.toString()) 
+            }
             dialog.dismiss()
             view?.let { bindProfile(it); bindStats(it) }
         }

@@ -11,6 +11,7 @@ import android.view.animation.PathInterpolator
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
+import com.google.android.material.imageview.ShapeableImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -48,7 +49,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val tvWelcome = view.findViewById<TextView>(R.id.tvWelcome)
-        val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
+        val ivHomeProfile = view.findViewById<ShapeableImageView>(R.id.ivHomeProfile)
         applyHomeInsets(view)
         setupStickyHeaderMotion(view)
         recentView = view.findViewById(R.id.containerRecent)
@@ -71,7 +72,7 @@ class HomeFragment : Fragment() {
         bindHomeData(view)
     }
 
-    private fun bindAvatar(iv: ImageView) {
+    private fun bindAvatar(iv: ShapeableImageView) {
         val uri = DataStore.getAvatarUri()
         if (uri != null) {
             try { iv.setImageURI(Uri.parse(uri)) } catch (_: Exception) {
@@ -121,7 +122,7 @@ class HomeFragment : Fragment() {
         val layoutLogo = view.findViewById<View>(R.id.layoutLogo)
         val ivHomeLogo = view.findViewById<ImageView>(R.id.ivHomeLogo)
         val tvHomeLogoTitle = view.findViewById<TextView>(R.id.tvHomeLogoTitle)
-        val ivHomeProfile = view.findViewById<ImageView>(R.id.ivHomeProfile)
+        val ivHomeProfile = view.findViewById<ShapeableImageView>(R.id.ivHomeProfile)
         val topMenuSeparator = view.findViewById<View>(R.id.topMenuSeparator)
 
         homeScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
@@ -148,7 +149,7 @@ class HomeFragment : Fragment() {
         topMenuSeparator: View,
         ivHomeLogo: ImageView,
         tvHomeLogoTitle: TextView,
-        ivHomeProfile: ImageView
+        ivHomeProfile: ShapeableImageView
     ) {
         val easedProgress = 1f - ((1f - progress) * (1f - progress))
         val logoScale = lerp(1f, 0.84f, easedProgress)

@@ -362,7 +362,7 @@
             app:layout_constraintStart_toEndOf="@id/ivHomeLogo"
             app:layout_constraintTop_toTopOf="@id/ivHomeLogo" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivHomeProfile"
             android:layout_width="44dp"
             android:layout_height="44dp"
@@ -373,6 +373,7 @@
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_photo_profile_round"
+            app:shapeAppearanceOverlay="@style/RoundedCornerMedium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
